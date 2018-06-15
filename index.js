@@ -1,6 +1,6 @@
 // Load the http module to create an http server.
 var http = require('http');
-var strip = require('./node_modules/rpi-ws281x-native/index.js');
+// var strip = require('./node_modules/rpi-ws281x-native/index.js');
 var express = require('express');
 var app = require('express')();
 var server = require('http').createServer(app);
@@ -19,27 +19,27 @@ console.log("Server running at http://127.0.0.1:8000/");
 var NUM_LEDS = 150;
 pixelData = new Uint32Array(NUM_LEDS);
 
-strip.init(NUM_LEDS);
+// strip.init(NUM_LEDS);
 
 // ---- trap the SIGINT and reset before exit
-process.on('SIGINT', function () {
-  strip.reset();
-  process.nextTick(function () { process.exit(0); });
-});
+// process.on('SIGINT', function () {
+//   strip.reset();
+//   process.nextTick(function () { process.exit(0); });
+// });
 
-for(var i = 0; i < NUM_LEDS; i++) {
-    pixelData[i] = 0xffcc22;
-}
-strip.render(pixelData);
+// for(var i = 0; i < NUM_LEDS; i++) {
+//     pixelData[i] = 0xffcc22;
+// }
+// strip.render(pixelData);
 
 // ---- animation-loop
-var t0 = Date.now();
-setInterval(function () {
-    var dt = Date.now() - t0;
-
-    strip.setBrightness(
-        Math.floor(Math.sin(dt/1000) * 128 + 128));
-}, 1000 / 30);
+// var t0 = Date.now();
+// setInterval(function () {
+//     var dt = Date.now() - t0;
+//
+//     strip.setBrightness(
+//         Math.floor(Math.sin(dt/1000) * 128 + 128));
+// }, 1000 / 30);
 
 // beforeRender: emitted just before the data is prepared and sent to the LED-driver.
 // The handler will receive the pixel-data array (an Uint32Array) as single argument.
