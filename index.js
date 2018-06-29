@@ -41,16 +41,7 @@ pixelData = new Uint32Array(NUM_LEDS);
 //         Math.floor(Math.sin(dt/1000) * 128 + 128));
 // }, 1000 / 30);
 
-// beforeRender: emitted just before the data is prepared and sent to the LED-driver.
-// The handler will receive the pixel-data array (an Uint32Array) as single argument.
-// As this event is handled synchronously,
-// you can use this to manipulate the data before it is sent to the LED-Strip.
-// strip.beforeRender();
 
-// render: emitted after the data has been sent to the LED-Strip.
-// The single argument passed to the handler is the final pixel-data array,
-// after index-remapping and gamma-correction.
-// strip.render(pixelData);
 
 // // ---- animation-loop
 // var offset = 0;
@@ -140,3 +131,15 @@ io.on('connection', function(socket){
 //      */
 //     reset: function() {}
 // };
+
+
+// beforeRender: emitted just before the data is prepared and sent to the LED-driver.
+// The handler will receive the pixel-data array (an Uint32Array) as single argument.
+// As this event is handled synchronously,
+// you can use this to manipulate the data before it is sent to the LED-Strip.
+// strip.beforeRender();
+
+// render: emitted after the data has been sent to the LED-Strip.
+// The single argument passed to the handler is the final pixel-data array,
+// after index-remapping and gamma-correction.
+// strip.render(pixelData);
