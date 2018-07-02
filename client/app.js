@@ -1,117 +1,77 @@
-var arch, state;
-
-//Aliases
-let Application = PIXI.Application,
-    Container = PIXI.Container,
-    loader = PIXI.loader,
-    resources = PIXI.loader.resources,
-    TextureCache = PIXI.utils.TextureCache,
-    Sprite = PIXI.Sprite,
-    Rectangle = PIXI.Rectangle;
-
-//Create a Pixi Application
-let app = new Application({
-    width: window.innerWidth,
-    height: window.innerHeight,
-    antialias: true,
-    transparent: false,
-    resolution: 1
+var app = new Vue({
+  el: '#app',
+  data: {
+    message: 'Hello Vue!'
   }
-);
-document.getElementById('Canvas').appendChild(app.view);
+});
+
+
+var app2 = new Vue({
+  el: '#app-2',
+  data: {
+    message: 'You loaded this page on ' + new Date().toLocaleString()
+  }
+});
 
 
 
+var app3 = new Vue({
+  el: '#app-3',
+  data: {
+    seen: true
+  }
+});
 
-PIXI.loader
-    // .add('Arch', 'arch.js')
-    .load(setup());
 
-// function loadProgressHandler() {
-  // console.log("loading: " + resource.url);
-  // console.log("progress: " + loader.progress + "%");
-// }
-
-// let message = new Text("Hello Pixi!");
-// app.stage.addChild(message);
-// message.position.set(54, 96);
-// let style = new TextStyle({
-//   fontFamily: "Arial",
-//   fontSize: 36,
-//   fill: "white",
-//   stroke: '#ff3300',
-//   strokeThickness: 4,
-//   dropShadow: true,
-//   dropShadowColor: "#000000",
-//   dropShadowBlur: 4,
-//   dropShadowAngle: Math.PI / 6,
-//   dropShadowDistance: 6,
-// });
-// message.text = "Text changed!";
-
-function setup() {
-  console.log("All files loaded");
-
-  app.renderer.backgroundColor = 0x000000;
-  app.renderer.view.style.position = "absolute";
-  app.renderer.view.style.display = "block";
-  app.renderer.autoResize = true;
-  app.renderer.resize(window.innerWidth, window.innerHeight);
-  arch = new Arch(PIXI, 50);
-
-  //set the state
-  state = ledDraw;
-
-  //Start the game loop by adding the `gameLoop` function to
-  //Pixi's `ticker` and providing it with a `delta` argument.
-  app.ticker.add(delta => gameLoop(delta));
-}
-
-function gameLoop(delta){
-  //Update the current game state:
-  state(delta);
-}
-
-function ledDraw(delta){
-
-}
+var app4 = new Vue({
+  el: '#app-4',
+  data: {
+    todos: [
+      { text: 'Learn JavaScript' },
+      { text: 'Learn Vue' },
+      { text: 'Build something awesome' }
+    ]
+  }
+});
 
 
 
-//keyboard controller
-function keyboard(keyCode)
-{
-    var key = {};
-    key.code = keyCode;
-    key.isDown = false;
-    key.isUp = true;
-    key.release = undefined;
+var app5 = new Vue({
+  el: '#app-5',
+  data: {
+    message: 'Hello Vue.js!'
+  },
+  methods: {
+    reverseMessage: function () {
+      this.message = this.message.split('').reverse().join('')
+    }
+  }
+});
 
-    //downhandler
-    key.downHandler = function(event)
-    {
-        if (event.keyCode === key.code)
-        {
-            key.isDown = true;
-            key.isUp = false;
-        }
-        event.preventDefault();
-    };
 
-    //uphandler
-    key.upHandler = function(event)
-    {
-        if (event.keyCode === key.code)
-        {
-            if (key.isDown && key.release) key.release();
-            key.isDown = false;
-            key.isUp = true;
-        }
-        event.preventDefault();
-    };
+var app6 = new Vue({
+  el: '#app-6',
+  data: {
+    message: 'Hello Vue!'
+  }
+});
 
-    // event listeners
-    window.addEventListener("keydown", key.downHandler.bind(key), false);
-    window.addEventListener("keyup", key.upHandler.bind(key), false);
-    return key;
-}
+// Define a new component called todo-item
+Vue.component('todo-item', {
+  // The todo-item component now accepts a
+  // "prop", which is like a custom attribute.
+  // This prop is called todo.
+  props: ['todo'],
+  template: '<li>{{ todo.text }}</li>'
+});
+
+var app7 = new Vue({
+  el: '#app-7',
+  data: {
+    groceryList: [
+      { id: 0, text: 'Vegetables' },
+      { id: 1, text: 'Cheese' },
+      { id: 2, text: 'Whatever else humans are supposed to eat' }
+    ]
+  }
+});
