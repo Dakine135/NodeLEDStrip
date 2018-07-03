@@ -1,3 +1,18 @@
+var vm = new Vue({
+  // options
+  data: {a: 1},
+  created: function () {
+    // `this` points to the vm instance
+    console.log('a is: ' + this.a)
+  }
+});
+
+//DONT use ()=>{}  arrow functions, they will mess up 'this'
+vm.$watch('a', function (newValue, oldValue) {
+  // This callback will be called when `vm.a` changes
+})
+
+
 var app = new Vue({
   el: '#app',
   data: {
