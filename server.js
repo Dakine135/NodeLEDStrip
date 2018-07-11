@@ -2,7 +2,7 @@
 var http = require('http');
 // var strip = require('./node_modules/rpi-ws281x-native/index.js');
 var express = require('express');
-var app = require('express')();
+var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 // io.on('connection', function(){ /* … */ });
