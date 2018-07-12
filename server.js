@@ -5,7 +5,6 @@ var express = require('express');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-// io.on('connection', function(){ /* … */ });
 
 app.use(express.static('client'));
 
@@ -15,9 +14,21 @@ server.listen(8000);
 // Put a friendly message on the terminal
 console.log("Server running at http://127.0.0.1:8000/");
 
-
 var NUM_LEDS = 150;
 pixelData = new Uint32Array(NUM_LEDS);
+
+io.on('connection', function(client){
+
+    io.on('connect', function(){
+      console.log("Connection ", client.id);
+    });
+    io.on('event', function(data){
+
+    });
+    io.on('disconnect', function(){
+      console.log("Disconect: ", client.id);
+    });
+});
 
 // strip.init(NUM_LEDS);
 

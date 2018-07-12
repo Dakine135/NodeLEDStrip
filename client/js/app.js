@@ -5,15 +5,6 @@ Framework7.use(Framework7Vue);
 Vue.component('page-about', {
   template: '#page-about'
 });
-Vue.component('page-form', {
-  template: '#page-form'
-});
-Vue.component('page-dynamic-routing', {
-  template: '#page-dynamic-routing'
-});
-Vue.component('page-not-found', {
-  template: '#page-not-found'
-});
 
 // Init App
 new Vue({
@@ -23,29 +14,29 @@ new Vue({
       // Framework7 parameters here
       f7params: {
         root: '#app', // App root element
-        id: 'io.framework7.testapp', // App bundle ID
-        name: 'Framework7', // App name
+        id: 'io.framework7.LedArchApp', // App bundle ID
+        name: 'DustinLedArch', // App name
         theme: 'auto', // Automatic theme detection
         // App routes
         routes: [
           {
             path: '/about/',
             component: 'page-about'
-          },
-          {
-            path: '/form/',
-            component: 'page-form'
-          },
-          {
-            path: '/dynamic-route/blog/:blogId/post/:postId/',
-            component: 'page-dynamic-routing'
-          },
-          {
-            path: '(.*)',
-            component: 'page-not-found',
-          },
+          }
         ],
       }
     }
   },
+}); // end vue app
+
+
+var socket = io();
+socket.on('connect', function(){
+  console.log("connected to Server");
+});
+socket.on('event', function(data){
+
+});
+socket.on('disconnect', function(){
+  console.log("lost Connection with Server");
 });
