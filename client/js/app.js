@@ -31,12 +31,36 @@ new Vue({
 
 
 var socket = io();
-socket.on('connect', function(){
-  console.log("connected to Server");
-});
+// socket.on('connect', function(){
+//   console.log("connected to Server");
+// });
 socket.on('event', function(data){
 
 });
-socket.on('disconnect', function(){
-  console.log("lost Connection with Server");
-});
+// socket.on('disconnect', function(){
+//   console.log("lost Connection with Server");
+// });
+
+socket.emit('event', "test");
+
+
+// if (window.DeviceMotionEvent == undefined) {
+//     //No accelerometer is present. Use buttons.
+//     alert("no accelerometer");
+// } else {
+//     alert("accelerometer found");
+//     window.addEventListener("devicemotion", accelerometerUpdate, true);
+// }
+//
+// function accelerometerUpdate(e) {
+//    var aX = event.accelerationIncludingGravity.x*1;
+//    var aY = event.accelerationIncludingGravity.y*1;
+//    var aZ = event.accelerationIncludingGravity.z*1;
+//    //The following two lines are just to calculate a
+//    // tilt. Not really needed.
+//    xPosition = Math.atan2(aY, aZ);
+//    yPosition = Math.atan2(aX, aZ);
+//    data = {x:xPosition, y:yPosition};
+//    // alert("moveEvent: ",data);
+//    socket.emit("event", data);
+// }
