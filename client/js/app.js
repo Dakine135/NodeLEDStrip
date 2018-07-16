@@ -6,6 +6,27 @@ Vue.component('page-about', {
   template: '#page-about'
 });
 
+// #onOff-template
+Vue.component('onOff', {
+  template: '<button>Test</button> asdfsgd'
+  // data: function () {
+  //   return {
+  //
+  //   }
+  // }
+});
+
+Vue.component('rainbow', {
+  template: 'rainbow-template',
+  data: function () {
+    return {
+
+    }
+  }
+});
+
+
+
 // Init App
 new Vue({
   el: '#app',

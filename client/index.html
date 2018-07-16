@@ -18,7 +18,7 @@
   <meta name="theme-color" content="#2196f3">
   <meta name="format-detection" content="telephone=no">
   <meta name="msapplication-tap-highlight" content="no">
-  <title>My App</title>
+  <title>Dustin LedArch</title>
   <link rel="stylesheet" href="libs/framework7/css/framework7.min.css">
   <link rel="stylesheet" href="css/icons.css">
   <link rel="stylesheet" href="css/app.css">
@@ -66,6 +66,8 @@
             </f7-nav-left>
             <f7-nav-title>Dustin's LED Arch</f7-nav-title>
           </f7-navbar>
+          <onOff></onOff>
+          test
           <!-- <f7-block-title>Buttons</f7-block-title> -->
           <!-- <f7-block strong>
             <f7-row>
@@ -123,38 +125,23 @@
     </f7-page>
   </template>
 
-  <!-- About Page Template -->
-  <template id="page-about">
-    <f7-page>
-      <f7-navbar title="About" back-link="Back"></f7-navbar>
-      <f7-block-title>Built by Dustin</f7-block-title>
-      <f7-block strong>
-        <!-- <p>You can go <f7-link back>back</f7-link>.</p> -->
-        <p>
-          <ul>
-            <li>Built using Vue JS and Framework7 Front End</li>
-            <li>Designed as a mobile webapp</li>
-            <li>Backend is Node JS Running on a Raspberry Pi</li>
-            <li>Controlls the Individualy Addressable RGB LEDs Running
-            The length of The archway between The Dinning Room and The Living Room</li>
-          </ul>
-        </p>
-      </f7-block>
-    </f7-page>
-  </template>
 
   <!-- Rainbow Page Template -->
-  <template id="Rainbow">
-    <f7-page>
-      <f7-navbar title="Rainbow"></f7-navbar>
-      <f7-block-title>Rainbow Animation Settings</f7-block-title>
+  <template id="onOff-template">
+
+      <f7-navbar title="OnOff"></f7-navbar>
+      <!-- <f7-block-title>On and Off main buttons</f7-block-title> -->
       <f7-block strong>
-        <!-- <p>You can go <f7-link back>back</f7-link>.</p> -->
-        <p>
-          Settings for Rainbow animation
-        </p>
+        <f7-row>
+          <f7-col width="50">
+            <f7-button fill raised>On Button</f7-button>
+          </f7-col>
+          <f7-col width="50">
+            <f7-button fill raised>Off</f7-button>
+          </f7-col>
+        </f7-row>
       </f7-block>
-    </f7-page>
+
   </template>
 
   <!-- Cordova -->
