@@ -7,7 +7,8 @@ const gameloop = require('node-gameloop');
 
 var NUM_LEDS = 217;
 var STRIP = require("./Strip.js");
-var strip = new STRIP(NUM_LEDS);
+const isPi = require('detect-rpi');
+var strip = new STRIP(isPi(), NUM_LEDS);
 
 app.use(express.static('client'));
 
@@ -22,6 +23,7 @@ io.on('connect', function(client){
 
     client.on('event', function(data){
       console.log("Event: ", data);
+      strip.changeState(data.state);
     });
 
     client.on('disconnect', function(){
@@ -37,7 +39,7 @@ const id = gameloop.setGameLoop(function(delta) {
     // `delta` is the delta time from the last frame
     // console.log('Frame=%s, Delta=%s', frameCount++, delta);
 
-    strip.update();
+    strip.update(delta);
 
 
 
@@ -149,19 +151,6 @@ var nextColor = colorSet.nextColor();
 //   // console.log("end/offser:" , end, offset);
 //   strip.render(pixelData);
 // }, 0.1);
-
-
-// rainbow-colors, taken from http://goo.gl/Cs3H0v
-function colorwheel(pos) {
-  pos = 255 - pos;
-  if (pos < 85) { return rgb2Int(255 - pos * 3, 0, pos * 3); }
-  else if (pos < 170) { pos -= 85; return rgb2Int(0, pos * 3, 255 - pos * 3); }
-  else { pos -= 170; return rgb2Int(pos * 3, 255 - pos * 3, 0); }
-}
-
-function rgb2Int(r, g, b) {
-  return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
-}
 
 
 function ColorSet(arrayOfColors)

@@ -1,3 +1,16 @@
+var socket = io();
+// socket.on('connect', function(){
+//   console.log("connected to Server");
+// });
+socket.on('event', function(data){
+
+});
+// socket.on('disconnect', function(){
+//   console.log("lost Connection with Server");
+// });
+
+// socket.emit('event', "test");
+
 // Init F7 Vue Plugin
 Framework7.use(Framework7Vue);
 
@@ -7,13 +20,25 @@ Vue.component('page-about', {
 });
 
 // #onOff-template
-Vue.component('onOff', {
-  template: '<button>Test</button> asdfsgd'
-  // data: function () {
-  //   return {
-  //
-  //   }
-  // }
+Vue.component('on-off', {
+  template: '#on-off-template',
+  data: function () {
+    return {
+      isActive: false
+    }
+  },
+  methods: {
+    turnOn: function() {
+      console.log("Turning On");
+      this.isActive = true;
+      socket.emit('event', {state: 'rainbow'});
+    },
+    turnOff: function() {
+      console.log("Turning Off");
+      this.isActive = false;
+      socket.emit('event', {state: 'off'});
+    }
+  }
 });
 
 Vue.component('rainbow', {
@@ -50,19 +75,6 @@ new Vue({
   },
 }); // end vue app
 
-
-var socket = io();
-// socket.on('connect', function(){
-//   console.log("connected to Server");
-// });
-socket.on('event', function(data){
-
-});
-// socket.on('disconnect', function(){
-//   console.log("lost Connection with Server");
-// });
-
-socket.emit('event', "test");
 
 
 // if (window.DeviceMotionEvent == undefined) {

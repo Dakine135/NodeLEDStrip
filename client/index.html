@@ -66,8 +66,7 @@
             </f7-nav-left>
             <f7-nav-title>Dustin's LED Arch</f7-nav-title>
           </f7-navbar>
-          <onOff></onOff>
-          test
+          <on-off></on-off>
           <!-- <f7-block-title>Buttons</f7-block-title> -->
           <!-- <f7-block strong>
             <f7-row>
@@ -127,21 +126,13 @@
 
 
   <!-- Rainbow Page Template -->
-  <template id="onOff-template">
-
-      <f7-navbar title="OnOff"></f7-navbar>
-      <!-- <f7-block-title>On and Off main buttons</f7-block-title> -->
+  <template id="on-off-template">
       <f7-block strong>
-        <f7-row>
-          <f7-col width="50">
-            <f7-button fill raised>On Button</f7-button>
-          </f7-col>
-          <f7-col width="50">
-            <f7-button fill raised>Off</f7-button>
-          </f7-col>
-        </f7-row>
+        <f7-segmented round round tag="p">
+           <f7-button round outline v-bind="{ active: isActive }" v-on:click="turnOn">On</f7-button>
+           <f7-button round outline v-bind="{ active: !isActive }" v-on:click="turnOff">Off</f7-button>
+         </f7-segmented>
       </f7-block>
-
   </template>
 
   <!-- Cordova -->
