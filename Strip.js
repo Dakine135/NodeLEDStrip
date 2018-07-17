@@ -11,14 +11,7 @@ class Strip
     if(this.isRunningOnPi){
       this.strip = require('./node_modules/rpi-ws281x-native/index.js');
       this.strip.init(NUM_LEDS);
-
-      // trap the SIGINT and reset before exit
-      process.on('SIGINT', function ()
-      {
-        this.strip.reset();
-        process.nextTick(function () { process.exit(0); });
-      });
-    }
+    }//if running on Pi
   } //constructor
 
   update(delta)
@@ -38,6 +31,7 @@ class Strip
     switch(stateName){
       case "off":
         this.state = null;
+        this.reset();
         break;
       case "rainbow":
         let RAINBOW = require("./states/Rainbow.js");
@@ -66,6 +60,10 @@ class Strip
 
   rgb2Int(r, g, b) {
     return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
+  }
+
+  reset(){
+    if(this.isRunningOnPi) this.strip.reset();
   }
 
 } //end Strip Class

@@ -10,6 +10,13 @@ var STRIP = require("./Strip.js");
 const isPi = require('detect-rpi');
 var strip = new STRIP(isPi(), NUM_LEDS);
 
+// trap the SIGINT and reset before exit
+process.on('SIGINT', function ()
+{
+  strip.reset();
+  process.nextTick(function () { process.exit(0); });
+});
+
 app.use(express.static('client'));
 
 // Listen on port 8000, IP defaults to 127.0.0.1

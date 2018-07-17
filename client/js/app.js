@@ -22,41 +22,41 @@ Vue.component('page-about', {
 // #onOff-template
 Vue.component('on-off', {
   template: '#on-off-template',
+  props:['title','initalStateName'],
   data: function () {
     return {
-      isActive: false
+      stateName: this.initalStateName
+    }
+  },
+  computed: {
+    isActive: function(){
+      if(this.stateName === this.$root.currentState) return true;
+      return false;
     }
   },
   methods: {
     turnOn: function() {
-      console.log("Turning On");
-      this.isActive = true;
-      socket.emit('event', {state: 'rainbow'});
+      // console.log("Turning On");
+      // this.isActive = true;
+      console.log("Turning On: ", this.stateName);
+      this.$root.currentState = this.stateName;
+      socket.emit('event', {state: this.stateName});
     },
     turnOff: function() {
       console.log("Turning Off");
-      this.isActive = false;
+      // this.isActive = false;
+      this.$root.currentState = 'off';
       socket.emit('event', {state: 'off'});
     }
   }
 });
-
-Vue.component('rainbow', {
-  template: 'rainbow-template',
-  data: function () {
-    return {
-
-    }
-  }
-});
-
-
 
 // Init App
 new Vue({
   el: '#app',
   data: function () {
     return {
+      currentState: 'off',
       // Framework7 parameters here
       f7params: {
         root: '#app', // App root element

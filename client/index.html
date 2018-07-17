@@ -18,7 +18,7 @@
   <meta name="theme-color" content="#2196f3">
   <meta name="format-detection" content="telephone=no">
   <meta name="msapplication-tap-highlight" content="no">
-  <title>Dustin LedArch</title>
+  <title>Welborn LED Arch</title>
   <link rel="stylesheet" href="libs/framework7/css/framework7.min.css">
   <link rel="stylesheet" href="css/icons.css">
   <link rel="stylesheet" href="css/app.css">
@@ -64,9 +64,16 @@
             <f7-nav-left>
               <f7-link icon-if-ios="f7:menu" icon-if-md="material:menu" panel-open="left"></f7-link>
             </f7-nav-left>
-            <f7-nav-title>Dustin's LED Arch</f7-nav-title>
+            <f7-nav-title>Welborn LED Arch</f7-nav-title>
           </f7-navbar>
-          <on-off></on-off>
+          currentState is {{ currentState }}
+          <f7-block>
+              <on-off title="Rainbow" inital-state-name='rainbow'></on-off>
+              <on-off title="Fade" inital-state-name='fade'></on-off>
+              <on-off title="Pulse" inital-state-name='pulse'></on-off>
+          </f7-block>
+
+
           <!-- <f7-block-title>Buttons</f7-block-title> -->
           <!-- <f7-block strong>
             <f7-row>
@@ -127,12 +134,10 @@
 
   <!-- Rainbow Page Template -->
   <template id="on-off-template">
-      <f7-block strong>
         <f7-segmented round round tag="p">
-           <f7-button round outline v-bind="{ active: isActive }" v-on:click="turnOn">On</f7-button>
-           <f7-button round outline v-bind="{ active: !isActive }" v-on:click="turnOff">Off</f7-button>
+           <f7-button round outline v-bind="{ active: isActive }" @click="turnOn">{{ title }}</f7-button>
+           <f7-button round outline v-bind="{ active: !isActive }" @click="turnOff">Off</f7-button>
          </f7-segmented>
-      </f7-block>
   </template>
 
   <!-- Cordova -->
