@@ -36,15 +36,12 @@ Vue.component('on-off', {
   },
   methods: {
     turnOn: function() {
-      // console.log("Turning On");
-      // this.isActive = true;
       console.log("Turning On: ", this.stateName);
       this.$root.currentState = this.stateName;
       socket.emit('event', {state: this.stateName});
     },
     turnOff: function() {
       console.log("Turning Off");
-      // this.isActive = false;
       this.$root.currentState = 'off';
       socket.emit('event', {state: 'off'});
     }

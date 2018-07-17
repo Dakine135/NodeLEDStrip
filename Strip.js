@@ -6,6 +6,7 @@ class Strip
     this.pixelData = new Uint32Array(NUM_LEDS);
     this.totalLeds = NUM_LEDS;
     this.state = null;
+    this.stateName = 'off';
     this.isRunningOnPi = isRunningOnPi;
     this.strip = null;
     if(this.isRunningOnPi){
@@ -27,27 +28,35 @@ class Strip
 
   changeState(stateName)
   {
-    console.log("change State to: ", stateName);
-    switch(stateName){
-      case "off":
-        this.state = null;
-        this.reset();
-        break;
-      case "rainbow":
-        let RAINBOW = require("./states/Rainbow.js");
-        this.state = new RAINBOW(this);
-        break;
-      case "fade":
-        let FADE = require("./states/Fade.js");
-        this.state = new FADE(this.totalLeds);
-        break;
-      case "pulse":
-        let PULSE = require("./states/Pulse.js");
-        this.state = new PULSE(this.totalLeds);
-        break;
-      default:
-        console.log("invalid stateName");
-    }//end switch
+    console.log("change State to: ", stateName, " From ", this.stateName);
+    if(stateName == this.stateName){
+      console.log("Same State, dont change");
+    } else {
+      switch(stateName){
+        case "off":
+          this.state = null;
+          this.stateName = 'off';
+          this.reset();
+          break;
+        case "rainbow":
+          let RAINBOW = require("./states/Rainbow.js");
+          this.state = new RAINBOW(this);
+          this.stateName = 'rainbow';
+          break;
+        case "fade":
+          let FADE = require("./states/Fade.js");
+          this.state = new FADE(this);
+          this.stateName = 'fade';
+          break;
+        case "pulse":
+          let PULSE = require("./states/Pulse.js");
+          this.state = new PULSE(this);
+          this.stateName = 'pulse';
+          break;
+        default:
+          console.log("invalid stateName");
+      }//end switch
+    }
   }//changeState
 
   // rainbow-colors, taken from http://goo.gl/Cs3H0v

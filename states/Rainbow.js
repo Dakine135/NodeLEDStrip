@@ -4,7 +4,7 @@ class Rainbow{
       this.offset = 0;
   }//constructor
 
-  update(){
+  update(delta){
     // ---- animation-loop color wheel slow roll
       for (var i = 0; i < this.strip.totalLeds; i++) {
         this.strip.pixelData[i] = this.strip.colorwheel((this.offset + i) % 256);
