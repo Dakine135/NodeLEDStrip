@@ -1,6 +1,8 @@
 var http = require('http');
 var express = require('express');
 var app = express();
+var reload = require('reload');
+reload(app);
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 const gameloop = require('node-gameloop');
@@ -41,10 +43,10 @@ io.on('connect', function(client){
 
 // start the loop at 30 fps (1000/30ms per frame) and grab its id
 let frameCount = 0;
-let frameRate = 30;
+let frameRate = 60; //frames per Second
 const id = gameloop.setGameLoop(function(delta) {
     // `delta` is the delta time from the last frame
-    // console.log('Frame=%s, Delta=%s', frameCount++, delta);
+    console.log('Frame=%s, Delta=%s', frameCount++, delta);
 
     strip.update(delta);
 

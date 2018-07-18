@@ -7,7 +7,7 @@ class Pulse{
       this.colorChangeFeq = 10;
   }//constructor
 
-  update(){
+  update(delta){
 
     // ---- animation-loop color wheel fast pulses full end
     var i=this.end;

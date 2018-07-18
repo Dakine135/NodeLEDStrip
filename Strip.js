@@ -75,6 +75,10 @@ class Strip
     if(this.isRunningOnPi) this.strip.reset();
   }
 
+  setBrightness(brightness){
+    this.strip.setBrightness(brightness);
+  }
+
 } //end Strip Class
 
 module.exports = Strip;
