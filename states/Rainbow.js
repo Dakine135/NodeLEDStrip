@@ -2,7 +2,7 @@ class Rainbow{
   constructor(STRIP){
       this.strip = STRIP;
       this.offset = 0;
-      this.speed = 1; //in pixel shifts per second
+      this.speed = 100; //in pixel shifts per second
   }//constructor
 
   update(delta){

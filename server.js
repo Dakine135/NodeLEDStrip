@@ -10,7 +10,9 @@ const gameloop = require('node-gameloop');
 var NUM_LEDS = 217;
 var STRIP = require("./Strip.js");
 const isPi = require('detect-rpi');
-var strip = new STRIP(isPi(), NUM_LEDS);
+var strip = new STRIP(isPi(), NUM_LEDS, 'fade');
+strip.changeState('fade');
+console.log("current State: ", strip.stateName);
 
 // trap the SIGINT and reset before exit
 process.on('SIGINT', function ()
@@ -46,7 +48,7 @@ let frameCount = 0;
 let frameRate = 60; //frames per Second
 const id = gameloop.setGameLoop(function(delta) {
     // `delta` is the delta time from the last frame
-    console.log('Frame=%s, Delta=%s', frameCount++, delta);
+    // console.log('Frame=%s, Delta=%s', frameCount++, delta);
 
     strip.update(delta);
 

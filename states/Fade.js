@@ -5,6 +5,7 @@ class Fade{
       this.index = 0;
       this.brightness = 0;
       this.direction = 1;
+      this.speed = 50; //brightness increments per second. 0-255
       this.nextPulse = false;
       this.currColor = this.nextColor();
   }//constructor
@@ -15,20 +16,24 @@ class Fade{
           this.currColor = this.nextColor();
           this.nextPulse = false;
         }
+        // console.log(this.brightness, this.currColor);
 
         for(var i = 0; i < this.strip.totalLeds; i++){
-            this.strip.pixelData[i] = this.nextColor;
+            this.strip.pixelData[i] = this.currColor;
         }
 
-        this.brightness = this.brightness + this.direction;
-        if(this.brightness == 255 || this.brightness == 0)
+        this.brightness = (this.brightness + ((this.speed * delta) * this.direction));
+
+        if(this.brightness >= 255 || this.brightness <= 0)
         {
            this.direction = -this.direction;
         }
-        if(this.brightness == 0) this.nextPulse = true;
-        // console.log(brightness);
+        if(this.brightness <= 0) this.nextPulse = true;
+
+
         if(this.strip.isRunningOnPi){
-          this.strip.setBrightness(this.brightness);
+          let brightnessFloor = Math.floor(Math.abs(this.brightness));
+          this.strip.setBrightness(brightnessFloor);
         }
 
         // strip.setBrightness(

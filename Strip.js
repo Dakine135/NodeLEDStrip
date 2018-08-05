@@ -32,11 +32,14 @@ class Strip
     if(stateName == this.stateName){
       console.log("Same State, dont change");
     } else {
+      this.setBrightness(255);
       switch(stateName){
         case "off":
           this.state = null;
           this.stateName = 'off';
-          this.reset();
+          this.pixelData = new Uint32Array(this.totalLeds);
+          this.strip.render(this.pixelData);
+          // this.reset();
           break;
         case "rainbow":
           let RAINBOW = require("./states/Rainbow.js");
