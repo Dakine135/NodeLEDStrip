@@ -19,6 +19,39 @@ Vue.component('page-about', {
   template: '#page-about'
 });
 
+Vue.component('speed-changer',{
+  template: '#speed-changer-template',
+  props:[],
+  data: function(){
+    return {
+      speed: 100
+    }
+  }
+});
+
+Vue.component('mode-switch',{
+  template: '#mode-switch-template',
+  props:['title','initalStateName'],
+  data: function(){
+    return {
+      stateName: this.initalStateName
+    }
+  },
+  computed: {
+    isActive: function(){
+      if(this.stateName === this.$root.currentState) return true;
+      return false;
+    }
+  },
+  methods: {
+    toggle: function() {
+      console.log("Toggle: ", this.stateName);
+      this.$root.currentState = this.stateName;
+      socket.emit('event', {state: this.stateName});
+    }
+  }
+});
+
 // #onOff-template
 Vue.component('on-off', {
   template: '#on-off-template',

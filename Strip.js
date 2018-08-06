@@ -9,6 +9,11 @@ class Strip
     this.stateName = 'off';
     this.isRunningOnPi = isRunningOnPi;
     this.strip = null;
+
+    //settings for states
+    let STATESETTINGS = require("./states/stateSettings.js");
+    this.stateSettings = new STATESETTINGS();
+
     if(this.isRunningOnPi){
       this.strip = require('./node_modules/rpi-ws281x-native/index.js');
       this.strip.init(NUM_LEDS);
@@ -38,7 +43,7 @@ class Strip
           this.state = null;
           this.stateName = 'off';
           this.pixelData = new Uint32Array(this.totalLeds);
-          this.strip.render(this.pixelData);
+          if(this.isRunningOnPi) this.strip.render(this.pixelData);
           // this.reset();
           break;
         case "rainbow":
@@ -79,7 +84,7 @@ class Strip
   }
 
   setBrightness(brightness){
-    this.strip.setBrightness(brightness);
+    if(this.isRunningOnPi) this.strip.setBrightness(brightness);
   }
 
 } //end Strip Class

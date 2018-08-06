@@ -1,11 +1,11 @@
 class Fade{
   constructor(STRIP){
       this.strip = STRIP;
-      this.colors = [0x9b31f7, 0x910a5b];
+      // this.colors = [0x9b31f7, 0x910a5b];
       this.index = 0;
       this.brightness = 0;
       this.direction = 1;
-      this.speed = 50; //brightness increments per second. 0-255
+      // this.strip.stateSettings.speed = 50; //brightness increments per second. 0-255
       this.nextPulse = false;
       this.currColor = this.nextColor();
   }//constructor
@@ -22,7 +22,7 @@ class Fade{
             this.strip.pixelData[i] = this.currColor;
         }
 
-        this.brightness = (this.brightness + ((this.speed * delta) * this.direction));
+        this.brightness = (this.brightness + ((this.strip.stateSettings.speed * delta) * this.direction));
 
         if(this.brightness >= 255 || this.brightness <= 0)
         {
@@ -43,15 +43,15 @@ class Fade{
 
 
   addColor(color){
-    this.colors.push(color);
+    this.strip.stateSettings.colors.push(color);
   }
 
   nextColor(){
     this.index++;
-    if(this.index == this.colors.length){
+    if(this.index == this.strip.stateSettings.colors.length){
       this.index = 0;
     }
-    return this.colors[this.index];
+    return this.strip.stateSettings.colors[this.index];
     //TODO error check to make sure there are colors in the array
   }//end nextColor
 

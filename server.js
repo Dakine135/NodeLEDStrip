@@ -10,8 +10,8 @@ const gameloop = require('node-gameloop');
 var NUM_LEDS = 217;
 var STRIP = require("./Strip.js");
 const isPi = require('detect-rpi');
-var strip = new STRIP(isPi(), NUM_LEDS, 'fade');
-strip.changeState('fade');
+var strip = new STRIP(isPi(), NUM_LEDS);
+strip.changeState('off');
 console.log("current State: ", strip.stateName);
 
 // trap the SIGINT and reset before exit
