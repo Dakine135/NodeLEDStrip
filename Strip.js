@@ -67,6 +67,10 @@ class Strip
     }
   }//changeState
 
+  updateSettings(data){
+    this.stateSettings.update(data);
+  }
+
   // rainbow-colors, taken from http://goo.gl/Cs3H0v
   colorwheel(pos) {
     pos = 255 - pos;

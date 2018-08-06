@@ -22,9 +22,52 @@ Vue.component('page-about', {
 Vue.component('speed-changer',{
   template: '#speed-changer-template',
   props:[],
-  data: function(){
+  computed: {
+    speed: function(){
+        return this.$root.speed
+    }
+  },
+  methods: {
+    onSpeedChange(value){
+      this.$root.speed = value;
+      socket.emit('event', {settings: {speed: this.speed} });
+    }
+  }
+});
+
+Vue.component('color-picker',{
+  template: '#color-picker-template',
+  props:[],
+  data: function() {
     return {
-      speed: 100
+      red: 100,
+      green: 100,
+      blue: 100
+    }
+  },
+  computed: {
+    color: function(){
+      console.log("test Color Computer");
+      let hexColor = "#" + componentToHex(this.red) +
+                           componentToHex(this.green) +
+                           componentToHex(this.blue);
+      console.log(this.color);
+      // socket.emit('event', {settings: {speed: this.speed} });
+      return hexColor;
+    }
+  },
+  methods: {
+    onRedChange(value){
+      console.log("Red change: ",value);
+      this.red = value;
+    },
+    onGreenChange(value){
+      console.log("Green change: ",value);
+      this.green = value;
+    },
+    onBlueChange(value){
+      this.blue = value;
+      console.log("Blue change: ",this.blue);
     }
   }
 });
@@ -87,6 +130,7 @@ new Vue({
   data: function () {
     return {
       currentState: 'off',
+      speed: 50,
       // Framework7 parameters here
       f7params: {
         root: '#app', // App root element

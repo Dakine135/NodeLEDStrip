@@ -34,7 +34,17 @@ io.on('connect', function(client){
 
     client.on('event', function(data){
       // console.log("Event: ", data);
-      strip.changeState(data.state);
+      let key = Object.keys(data)[0];
+      switch(key){
+        case 'state':
+          strip.changeState(data.state);
+          break;
+        case 'settings':
+          strip.updateSettings(data.settings);
+          break;
+        default:
+         console.log('unknown event:',data);
+      }
     });
 
     client.on('disconnect', function(){

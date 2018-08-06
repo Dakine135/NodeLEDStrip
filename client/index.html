@@ -71,42 +71,29 @@
 
           <f7-block-title>Current Mode is {{ currentState }}</f7-block-title>
           <f7-block>
-              <!-- <on-off title="Rainbow" inital-state-name='rainbow'></on-off>
-              <on-off title="Fade" inital-state-name='fade'></on-off>
-              <on-off title="Pulse" inital-state-name='pulse'></on-off> -->
 
               <template id="off-settings-template" v-if="currentState == 'off'">
-                Off Settings Template
-                <speed-changer></speed-changer>
+                <!-- <f7-block-title>Off Settings</f7-block-title> -->
+                <color-picker></color-picker>
               </template>
 
               <template id="rainbow-settings-template" v-if="currentState == 'rainbow'">
-                Rainbow Settings Template
+                Rainbow Settings
                 <speed-changer></speed-changer>
               </template>
 
               <template id="fade-settings-template" v-if="currentState == 'fade'">
-                Fade Settings Template
+                Fade Settings
+                <speed-changer></speed-changer>
               </template>
 
               <template id="pulse-settings-template" v-if="currentState == 'pulse'">
-                Pulse Settings Template
+                Pulse Settings
+                <speed-changer></speed-changer>
               </template>
 
           </f7-block>
 
-
-          <!-- <f7-block-title>Buttons</f7-block-title> -->
-          <!-- <f7-block strong>
-            <f7-row>
-              <f7-col width="50">
-                <f7-button fill raised panel-open="left">Left Panel</f7-button>
-              </f7-col>
-              <f7-col width="50">
-                <f7-button fill raised popup-open="#popup">Popup</f7-button>
-              </f7-col>
-            </f7-row>
-          </f7-block> -->
           <f7-list>
             <f7-list-item link="/about/" title="About"></f7-list-item>
           </f7-list>
@@ -171,30 +158,87 @@
 
 
   <template id="speed-changer-template">
-    Speed Slider
-    <div id='slider'></div>
-
-
+    <f7-block>
+      <f7-row no-gap>
+        <f7-col width="10">
+          <f7-icon material="directions_run"></f7-icon>
+        </f7-col>
+        <f7-col width="90">
+          <f7-range
+           :min="0.1"
+           :max="100"
+           :step="0.5"
+           :value="10"
+           :label="true"
+           color="yellow"
+           @range:change="onSpeedChange"
+           ></f7-range>
+        </f7-col>
+    </f7-row>
+   </f7-block>
   </template>
 
-<script>
-  var slider = document.getElementById('slider');
-  noUiSlider.create(slider, {
-    start: [20],
-    connect: true,
-    range: {
-      'min': 0,
-      'max': 100
-    }
-  });
-</script>
+
+  <template id="color-picker-template">
+    <!-- <p>
+      test
+    </p> -->
+    <f7-block>
+      <f7-row no-gap>
+        <f7-col width="10">
+          <f7-icon material="color_lens"></f7-icon>
+        </f7-col>
+        <f7-col width="90">
+          <f7-range
+           :min="0"
+           :max="255"
+           :step="1"
+           :value="100"
+           color="red"
+           @range:change="onRedChange"
+           ></f7-range>
+        </f7-col>
+    </f7-row>
+    <f7-row no-gap>
+      <f7-col width="10">
+        <f7-icon material="brush"></f7-icon>
+      </f7-col>
+      <f7-col width="90">
+        <f7-range
+         :min="0"
+         :max="255"
+         :step="1"
+         :value="100"
+         color="green"
+         @range:change="onGreenChange"
+         ></f7-range>
+      </f7-col>
+  </f7-row>
+  <f7-row no-gap>
+    <f7-col width="10">
+      <f7-icon material="format_paint"></f7-icon>
+    </f7-col>
+    <f7-col width="90">
+      <f7-range
+       :min="0"
+       :max="255"
+       :step="1"
+       :value="100"
+       color="blue"
+       @range:change="onBlueChange"
+       ></f7-range>
+    </f7-col>
+</f7-row>
+ <f7-button big fill color="red">Add Color</f7-button>
+   </f7-block>
+  </template>
+
+
 
 
 
   <!-- Cordova -->
   <!--<script src="cordova.js"></script>-->
-  <!-- NoUiSlider Library -->
-  <script src="libs/noUiSlider/nouislider.min.js"></script>
   <!-- Framework7 library -->
   <script src="libs/framework7/js/framework7.min.js"></script>
   <!-- Vue -->
