@@ -29,10 +29,11 @@ server.listen(8000);
 // Put a friendly message on the terminal
 console.log("Server running at http://127.0.0.1:8000/");
 
-io.on('connect', function(client){
-    console.log("Connection ", client.id);
+io.on('connect', function(socket){
+    console.log("Connection ", socket.id);
+    socket.emit("clientUpdate", strip.package());
 
-    client.on('event', function(data){
+    socket.on('event', function(data){
       // console.log("Event: ", data);
       let key = Object.keys(data)[0];
       switch(key){
@@ -45,10 +46,15 @@ io.on('connect', function(client){
         default:
          console.log('unknown event:',data);
       }
+      io.emit("clientUpdate", strip.package());
     });
 
-    client.on('disconnect', function(){
-      console.log("Disconect: ", client.id);
+    socket.on('tilt', function(data){
+      console.log(data);
+    });
+
+    socket.on('disconnect', function(){
+      console.log("Disconect: ", socket.id);
     });
 });
 

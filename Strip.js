@@ -91,6 +91,14 @@ class Strip
     if(this.isRunningOnPi) this.strip.setBrightness(brightness);
   }
 
+  package(){
+    let tempPackage = {
+      settings: this.stateSettings.package(),
+      stateName: this.stateName
+    }
+    return tempPackage;
+  }
+
 } //end Strip Class
 
 module.exports = Strip;

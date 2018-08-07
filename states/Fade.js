@@ -48,11 +48,14 @@ class Fade{
 
   nextColor(){
     this.index++;
+    if(this.strip.stateSettings.colors.length == 0){
+      this.index = 0;
+      return this.currColor;
+    }
     if(this.index == this.strip.stateSettings.colors.length){
       this.index = 0;
     }
     return this.strip.stateSettings.colors[this.index];
-    //TODO error check to make sure there are colors in the array
   }//end nextColor
 
 

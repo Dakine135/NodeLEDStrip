@@ -34,7 +34,7 @@
       <f7-panel left reveal theme-dark>
         <f7-view id="left-panel-view">
           <f7-page>
-            <f7-navbar title="Left Panel"></f7-navbar>
+            <f7-navbar title="Menu of Modes"></f7-navbar>
             <f7-block-title>Animation Modes</f7-block-title>
             <f7-block>
               <f7-list>
@@ -42,6 +42,7 @@
                 <mode-switch title="Rainbow" inital-state-name='rainbow'></mode-switch>
                 <mode-switch title="Fade" inital-state-name='fade'></mode-switch>
                 <mode-switch title="Pulse" inital-state-name='pulse'></mode-switch>
+                <mode-switch title="Tilt" inital-state-name='tilt'></mode-switch>
               </f7-list>
             </f7-block>
             <f7-block-title>Coming?</f7-block-title>
@@ -69,12 +70,13 @@
             <f7-nav-title>Welborn LED Arch</f7-nav-title>
           </f7-navbar>
 
-          <f7-block-title>Current Mode is {{ currentState }}</f7-block-title>
+          <!-- <f7-block-title>Current Mode is {{ currentState }}</f7-block-title> -->
           <f7-block>
 
               <template id="off-settings-template" v-if="currentState == 'off'">
-                <!-- <f7-block-title>Off Settings</f7-block-title> -->
-                <color-picker></color-picker>
+                <f7-block-title>Off</f7-block-title>
+                <!-- <speed-changer></speed-changer>
+                <color-picker></color-picker> -->
               </template>
 
               <template id="rainbow-settings-template" v-if="currentState == 'rainbow'">
@@ -85,10 +87,16 @@
               <template id="fade-settings-template" v-if="currentState == 'fade'">
                 Fade Settings
                 <speed-changer></speed-changer>
+                <color-picker></color-picker>
               </template>
 
               <template id="pulse-settings-template" v-if="currentState == 'pulse'">
                 Pulse Settings
+                <speed-changer></speed-changer>
+              </template>
+
+              <template id="tilt-settings-template" v-if="currentState == 'tilt'">
+                Tilt Settings
                 <speed-changer></speed-changer>
               </template>
 
@@ -160,30 +168,65 @@
   <template id="speed-changer-template">
     <f7-block>
       <f7-row no-gap>
+        <!-- <small class="display-block">Speed</small> -->
+        <f7-col width="50">
+          <f7-stepper fill small round color="orange"
+            :value="speed"
+            :min="minSpeed"
+            :max="maxSpeed"
+            :step="0.1"
+            :autorepeat="true"
+            :manual-input-mode="true"
+            :decimal-point="2"
+            @stepper:change="onSpeedChange"
+          ></f7-stepper>
+        </f7-col>
+        <f7-col width="50">
+          <f7-stepper fill small round color="orange"
+            :value="speed"
+            :min="minSpeed"
+            :max="maxSpeed"
+            :step="1"
+            :autorepeat="true"
+            :manual-input-mode="true"
+            :decimal-point="2"
+            @stepper:change="onSpeedChange"
+          ></f7-stepper>
+        </f7-col>
+      </f7-row>
+      <f7-row no-gap>
         <f7-col width="10">
           <f7-icon material="directions_run"></f7-icon>
         </f7-col>
         <f7-col width="90">
           <f7-range
-           :min="0.1"
-           :max="100"
-           :step="0.5"
-           :value="10"
-           :label="true"
+           :min="minSpeed"
+           :max="maxSpeed"
+           :step="1"
+           :value="speed"
            color="yellow"
            @range:change="onSpeedChange"
            ></f7-range>
         </f7-col>
+        <!-- <f7-col width="5">
+          <f7-chip :text="speed" color="yellow"></f7-chip>
+        </f7-col> -->
     </f7-row>
    </f7-block>
   </template>
 
 
   <template id="color-picker-template">
-    <!-- <p>
-      test
-    </p> -->
     <f7-block>
+      <f7-row v-for="row in colorsRows">
+        <f7-col v-for="col in row">
+          <f7-button small fill
+            :style="'background-color:'+col"
+            @click="removeColor(col)">
+            {{col}}
+          </f7-button>
+        </f7-col>
+      </f7-row>
       <f7-row no-gap>
         <f7-col width="10">
           <f7-icon material="color_lens"></f7-icon>
@@ -196,13 +239,13 @@
            :value="100"
            color="red"
            @range:change="onRedChange"
-           ></f7-range>
+          ></f7-range>
         </f7-col>
-    </f7-row>
-    <f7-row no-gap>
-      <f7-col width="10">
-        <f7-icon material="brush"></f7-icon>
-      </f7-col>
+      </f7-row>
+      <f7-row no-gap>
+        <f7-col width="10">
+          <f7-icon material="brush"></f7-icon>
+        </f7-col>
       <f7-col width="90">
         <f7-range
          :min="0"
@@ -213,11 +256,11 @@
          @range:change="onGreenChange"
          ></f7-range>
       </f7-col>
-  </f7-row>
-  <f7-row no-gap>
-    <f7-col width="10">
-      <f7-icon material="format_paint"></f7-icon>
-    </f7-col>
+    </f7-row>
+    <f7-row no-gap>
+      <f7-col width="10">
+        <f7-icon material="format_paint"></f7-icon>
+      </f7-col>
     <f7-col width="90">
       <f7-range
        :min="0"
@@ -228,8 +271,19 @@
        @range:change="onBlueChange"
        ></f7-range>
     </f7-col>
-</f7-row>
- <f7-button big fill color="red">Add Color</f7-button>
+    </f7-row>
+    <f7-button big fill
+      :style="'background-color:'+color"
+      @click="addColor">
+      Add Color {{color}}
+    </f7-button>
+   </f7-block>
+  </template>
+
+
+  <template id="gyro-template">
+    <f7-block>
+      
    </f7-block>
   </template>
 
