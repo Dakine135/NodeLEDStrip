@@ -42,11 +42,13 @@ Vue.component('speed-changer',{
   },
   computed: {
     speed: function(){
+        // console.log("computed speed from root");
         return this.$root.speed
     }
   },
   methods: {
-    onSpeedChange(value){
+    onSpeedChanged(value){
+      // console.log("Speed change method");
       this.$root.speed = value;
       socket.emit('event', {settings: {speed: this.speed} });
     }

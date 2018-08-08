@@ -198,8 +198,7 @@
 
   <template id="speed-changer-template">
     <f7-block>
-      <f7-row no-gap>
-        <!-- <small class="display-block">Speed</small> -->
+      <!-- <f7-row no-gap>
         <f7-col width="50">
           <f7-stepper fill small round color="orange"
             :value="speed"
@@ -209,7 +208,8 @@
             :autorepeat="true"
             :manual-input-mode="true"
             :decimal-point="2"
-            @stepper:change="onSpeedChange"
+            @stepper:minusclick="onSpeedChanged"
+            @stepper:plusclick="onSpeedChanged"
           ></f7-stepper>
         </f7-col>
         <f7-col width="50">
@@ -221,10 +221,11 @@
             :autorepeat="true"
             :manual-input-mode="true"
             :decimal-point="2"
-            @stepper:change="onSpeedChange"
+            @stepper:minusclick="onSpeedChanged"
+            @stepper:plusclick="onSpeedChanged"
           ></f7-stepper>
         </f7-col>
-      </f7-row>
+      </f7-row> -->
       <f7-row no-gap>
         <f7-col width="10">
           <f7-icon material="directions_run"></f7-icon>
@@ -236,7 +237,7 @@
            :step="1"
            :value="speed"
            color="yellow"
-           @range:change="onSpeedChange"
+           @range:changed="onSpeedChanged"
            ></f7-range>
         </f7-col>
         <!-- <f7-col width="5">
