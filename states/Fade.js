@@ -52,16 +52,14 @@ class Fade{
       this.index = 0;
       return this.currColor;
     }
-    if(this.index == this.strip.stateSettings.colors.length){
+    if(this.index >= this.strip.stateSettings.colors.length){
       this.index = 0;
     }
 
     let tempColor = this.strip.stateSettings.colors[this.index];
-    console.log("tempColor Raw", tempColor);
+    // console.log("tempColor Raw", tempColor);
     let toInt = parseInt(tempColor.slice(1), 16);
-    console.log("After Parse", toInt);
-
-
+    // console.log("After Parse", toInt);
     return toInt;
   }//end nextColor
 
