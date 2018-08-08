@@ -42,13 +42,13 @@ Vue.component('speed-changer',{
   },
   computed: {
     speed: function(){
-        console.log("computed speed from root");
+        // console.log("computed speed from root");
         return this.$root.speed
     }
   },
   methods: {
     onSpeedChanged(value){
-      console.log("Speed change method");
+      // console.log("Speed change method");
       this.$root.speed = value;
       socket.emit('event', {settings: {speed: this.speed} });
     }
@@ -190,7 +190,7 @@ var mainApp = new Vue({
 }); // end vue app
 
 socket.on('clientUpdate', function(data){
-  console.log("clientUpdate: ", data);
+  // console.log("clientUpdate: ", data);
   mainApp.currentState = data.stateName;
   mainApp.speed = data.settings.speed;
   mainApp.colors = data.settings.colors;
