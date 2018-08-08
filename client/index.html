@@ -178,7 +178,7 @@
             :autorepeat="true"
             :manual-input-mode="true"
             :decimal-point="2"
-            @stepper:change="onSpeedChange"
+            @stepper:change="onSpeedChanged"
           ></f7-stepper>
         </f7-col>
         <f7-col width="50">
@@ -190,7 +190,7 @@
             :autorepeat="true"
             :manual-input-mode="true"
             :decimal-point="2"
-            @stepper:change="onSpeedChange"
+            @stepper:change="onSpeedChanged"
           ></f7-stepper>
         </f7-col>
       </f7-row>
@@ -205,7 +205,7 @@
            :step="1"
            :value="speed"
            color="yellow"
-           @range:change="onSpeedChange"
+           @range:changed="onSpeedChanged"
            ></f7-range>
         </f7-col>
         <!-- <f7-col width="5">
@@ -283,7 +283,7 @@
 
   <template id="gyro-template">
     <f7-block>
-      
+
    </f7-block>
   </template>
 

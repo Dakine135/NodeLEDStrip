@@ -42,11 +42,13 @@ Vue.component('speed-changer',{
   },
   computed: {
     speed: function(){
+        console.log("computed speed from root");
         return this.$root.speed
     }
   },
   methods: {
-    onSpeedChange(value){
+    onSpeedChanged(value){
+      console.log("Speed change method");
       this.$root.speed = value;
       socket.emit('event', {settings: {speed: this.speed} });
     }
@@ -196,28 +198,28 @@ socket.on('clientUpdate', function(data){
 
 
 
-if (window.DeviceMotionEvent == undefined) {
-    //No accelerometer is present. Use buttons.
-    // alert("no accelerometer");
-} else {
-    // alert("accelerometer found");
-    window.addEventListener("devicemotion", accelerometerUpdate, true);
-}
-
-var count = 0;
-function accelerometerUpdate(e) {
-   var aX = event.accelerationIncludingGravity.x*1;
-   var aY = event.accelerationIncludingGravity.y*1;
-   var aZ = event.accelerationIncludingGravity.z*1;
-   //The following two lines are just to calculate a
-   // tilt. Not really needed.
-   xPosition = Math.atan2(aY, aZ);
-   yPosition = Math.atan2(aX, aZ);
-   data = {x:xPosition, y:yPosition};
-   // console.log(data);
-   // alert("moveEvent: ",data);
-   if(count > 100){
-     socket.emit("tilt", data);
-     count = 0;
-   } else count++;
-}
+// if (window.DeviceMotionEvent == undefined) {
+//     //No accelerometer is present. Use buttons.
+//     // alert("no accelerometer");
+// } else {
+//     // alert("accelerometer found");
+//     window.addEventListener("devicemotion", accelerometerUpdate, true);
+// }
+//
+// var count = 0;
+// function accelerometerUpdate(e) {
+//    var aX = event.accelerationIncludingGravity.x*1;
+//    var aY = event.accelerationIncludingGravity.y*1;
+//    var aZ = event.accelerationIncludingGravity.z*1;
+//    //The following two lines are just to calculate a
+//    // tilt. Not really needed.
+//    xPosition = Math.atan2(aY, aZ);
+//    yPosition = Math.atan2(aX, aZ);
+//    data = {x:xPosition, y:yPosition};
+//    // console.log(data);
+//    // alert("moveEvent: ",data);
+//    if(count > 100){
+//      socket.emit("tilt", data);
+//      count = 0;
+//    } else count++;
+// }
