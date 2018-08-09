@@ -51,6 +51,10 @@ io.on('connect', function(socket){
 
     socket.on('tilt', function(data){
       console.log(data);
+      if(strip.stateName == 'tilt'){
+        let point = {id: socket.id, y:data.y};
+        strip.state.addUpdatePoint(point);
+      }
     });
 
     socket.on('disconnect', function(){

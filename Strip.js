@@ -61,6 +61,11 @@ class Strip
           this.state = new PULSE(this);
           this.stateName = 'pulse';
           break;
+        case "tilt":
+          let TILT = require("./states/Tilt.js");
+          this.state = new TILT(this);
+          this.stateName = 'tilt';
+          break;
         default:
           console.log("invalid stateName");
       }//end switch
