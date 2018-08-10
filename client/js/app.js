@@ -22,7 +22,52 @@ Vue.component('page-about', {
   template: '#page-about'
 });
 
-var gyroModule = Vue.component('gyro-sensor', {
+Vue.component('send-pulse', {
+  template: '#pulse-template',
+  data: function(){
+    return {
+      red: 100,
+      green: 100,
+      blue: 100,
+      speed: 100,
+      minSpeed: 0.01,
+      maxSpeed: 200
+    }
+  },
+  computed: {
+    color: function(){
+      let hexColor = "#" + componentToHex(this.red) +
+                           componentToHex(this.green) +
+                           componentToHex(this.blue);
+      // console.log("hexColor", hexColor);
+      return hexColor;
+    }
+  },
+  methods: {
+    onRedChange(value){
+      // console.log("Red change: ",value);
+      this.red = value;
+    },
+    onGreenChange(value){
+      // console.log("Green change: ",value);
+      this.green = value;
+    },
+    onBlueChange(value){
+      this.blue = value;
+      // console.log("Blue change: ",this.blue);
+    },
+    onSpeedChanged(value){
+      // console.log("Speed change method");
+      this.speed = value;
+    },
+    sendPulse: function(){
+      console.log("Send Pulse");
+      socket.emit('event', {pulse: {color: this.color, speed: this.speed}});
+    }
+  }
+});
+
+Vue.component('gyro-sensor', {
   template: '#gyro-template',
   mounted() {
     if (window.DeviceMotionEvent == undefined) {
@@ -65,12 +110,12 @@ var gyroModule = Vue.component('gyro-sensor', {
       let roundY = Math.round( y);
       let data = {x:roundX, y:roundY};
 
-      // if(this.count > 20){
+      //Currently only using y and not x
+      //    this.data.x != data.x ||
+      if(this.data.y != data.y){
         socket.emit("tilt", data);
-        // this.count = 0;
-      // } else this.count++;
-
-      this.data = data;
+        this.data = data;
+      }
 
       output.innerHTML  = "beta : " + x + "\n";
       output.innerHTML += "gamma: " + y + "\n";
@@ -102,8 +147,13 @@ Vue.component('speed-changer',{
   methods: {
     onSpeedChanged(value){
       // console.log("Speed change method");
-      this.$root.speed = value;
-      socket.emit('event', {settings: {speed: this.speed} });
+      // this.$root.speed = value;
+      socket.emit('event', {settings: {speed: value} });
+    },
+    addSpeed(value){
+      let newSpeed = Math.round((this.$root.speed + value) * 100) / 100;
+
+      socket.emit('event', {settings: {speed: newSpeed} });
     }
   }
 });
@@ -187,35 +237,6 @@ Vue.component('mode-switch',{
   }
 });
 
-// #onOff-template
-Vue.component('on-off', {
-  template: '#on-off-template',
-  props:['title','initalStateName'],
-  data: function () {
-    return {
-      stateName: this.initalStateName
-    }
-  },
-  computed: {
-    isActive: function(){
-      if(this.stateName === this.$root.currentState) return true;
-      return false;
-    }
-  },
-  methods: {
-    turnOn: function() {
-      console.log("Turning On: ", this.stateName);
-      this.$root.currentState = this.stateName;
-      socket.emit('event', {state: this.stateName});
-    },
-    turnOff: function() {
-      console.log("Turning Off");
-      this.$root.currentState = 'off';
-      socket.emit('event', {state: 'off'});
-    }
-  }
-});
-
 // Init App
 var mainApp = new Vue({
   el: '#app',
@@ -230,6 +251,9 @@ var mainApp = new Vue({
         id: 'io.framework7.LedArchApp', // App bundle ID
         name: 'DustinLedArch', // App name
         theme: 'auto', // Automatic theme detection
+        panel: {
+          swipe: 'left'
+        },
         // App routes
         routes: [
           {
@@ -248,93 +272,3 @@ socket.on('clientUpdate', function(data){
   mainApp.speed = data.settings.speed;
   mainApp.colors = data.settings.colors;
 });
-
-
-// window.onload = function(){
-
-  // var ball   = document.querySelector('.ball');
-  // var garden = document.querySelector('.garden');
-  // var output = document.querySelector('.output');
-  //
-  // var maxX = garden.clientWidth  - ball.clientWidth;
-  // var maxY = garden.clientHeight - ball.clientHeight;
-
-  // function handleOrientation(event){
-  //   var x = event.beta;  // In degree in the range [-180,180]
-  //   var y = event.gamma; // In degree in the range [-90,90]
-  //
-  //   output.innerHTML  = "beta : " + x + "\n";
-  //   output.innerHTML += "gamma: " + y + "\n";
-  //
-  //   // Because we don't want to have the device upside down
-  //   // We constrain the x value to the range [-90,90]
-  //   if (x >  90) { x =  90};
-  //   if (x < -90) { x = -90};
-  //
-  //   // To make computation easier we shift the range of
-  //   // x and y to [0,180]
-  //   x += 90;
-  //   y += 90;
-  //
-  //   // 10 is half the size of the ball
-  //   // It center the positioning point to the center of the ball
-  //   ball.style.top  = (maxX*x/180 - 10) + "px";
-  //   ball.style.left = (maxY*y/180 - 10) + "px";
-  //
-  //   let roundX = Math.round( x);
-  //   let roundY = Math.round( y);
-  //
-  //   data = {x:roundX, y:roundY};
-  //
-  //   // if (data.x == null || data.x == undefined){
-  //   //      data = {x:x, y:y};
-  //   //    } else {
-  //   //      let avgX = (0.7 * x) + (0.3 * data.x);
-  //   //      let avgY = (0.7 * y) + (0.3 * data.y);
-  //   //      let roundAvgX = (Math.round( avgX * 100 )) / 100;
-  //   //      let roundAvgY = (Math.round( avgY * 100 )) / 100;
-  //   //      data = {x:roundAvgX, y:roundAvgY};
-  //   //    }
-  //
-  //      // console.log(data);
-  //      // alert("moveEvent: ",data);
-  //      if(count > 20){
-  //        socket.emit("tilt", data);
-  //        count = 0;
-  //      } else count++;
-  // }
-// }//windows onload
-
-
-
-
-//
-// var count = 0;
-// var data = {};
-// function accelerometerUpdate(e) {
-//    var aX = event.accelerationIncludingGravity.x*1;
-//    var aY = event.accelerationIncludingGravity.y*1;
-//    var aZ = event.accelerationIncludingGravity.z*1;
-//    let dataRaw = {aX: aX, aY: aY, aZ: aZ};
-//    //The following two lines are just to calculate a
-//    // tilt. Not really needed.
-//    xPosition = Math.atan2(aY, aZ);
-//    yPosition = Math.atan2(aX, aZ);
-//    if (data.x == null || data.x == undefined){
-//      data = {x:xPosition, y:yPosition};
-//    } else {
-//      let avgX = (0.7 * xPosition) + (0.3 * data.x);
-//      let avgY = (0.7 * yPosition) + (0.3 * data.y);
-//      let roundAvgX = (Math.round( avgX * 100 )) / 100;
-//      let roundAvgY = (Math.round( avgY * 100 )) / 100;
-//      data = {x:roundAvgX, y:roundAvgY};
-//    }
-//
-//    // console.log(data);
-//    // alert("moveEvent: ",data);
-//    if(count > 50){
-//      socket.emit("tilt", data);
-//      socket.emit("tilt", dataRaw);
-//      count = 0;
-//    } else count++;
-// }

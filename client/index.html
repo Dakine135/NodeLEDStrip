@@ -52,7 +52,6 @@
     <f7-app :params="f7params">
       <!-- Statusbar -->
       <f7-statusbar></f7-statusbar>
-
       <!-- Left Panel -->
       <f7-panel left reveal theme-dark>
         <f7-view id="left-panel-view">
@@ -93,33 +92,31 @@
             <f7-nav-title>Welborn LED Arch</f7-nav-title>
           </f7-navbar>
 
-          <!-- <f7-block-title>Current Mode is {{ currentState }}</f7-block-title> -->
           <f7-block>
 
               <template id="off-settings-template" v-if="currentState == 'off'">
-                <f7-block-title>Off</f7-block-title>
-                <!-- <speed-changer></speed-changer>
-                <color-picker></color-picker> -->
+                <f7-button round outline panel-open="left">Current Mode: Off</f7-button>
               </template>
 
               <template id="rainbow-settings-template" v-if="currentState == 'rainbow'">
-                Rainbow Settings
+                <f7-button round outline panel-open="left">Current Mode: Rainbow</f7-button>
                 <speed-changer></speed-changer>
               </template>
 
               <template id="fade-settings-template" v-if="currentState == 'fade'">
-                Fade Settings
+                <f7-button round outline panel-open="left">Current Mode: Fade</f7-button>
                 <speed-changer></speed-changer>
                 <color-picker></color-picker>
               </template>
 
               <template id="pulse-settings-template" v-if="currentState == 'pulse'">
-                Pulse Settings
+                <f7-button round outline panel-open="left">Current Mode: Pulse</f7-button>
                 <speed-changer></speed-changer>
+                <send-pulse></send-pulse>
               </template>
 
               <template id="tilt-settings-template" v-if="currentState == 'tilt'">
-                Tilt Settings
+                <f7-button round outline panel-open="left">Current Mode: Tilt</f7-button>
                 <!-- <speed-changer></speed-changer> -->
                 <gyro-sensor></gyro-sensor>
               </template>
@@ -173,36 +170,26 @@
   </template>
 
 
-  <!-- On-Off Template -->
-  <template id="on-off-template">
-        <f7-segmented round round tag="p">
-           <f7-button round outline v-bind="{ active: isActive }" @click="turnOn">{{ title }}</f7-button>
-           <f7-button round outline v-bind="{ active: !isActive }" @click="turnOff">Off</f7-button>
-         </f7-segmented>
-  </template>
-
-
   <template id="mode-switch-template">
         <!-- <f7-segmented round round tag="p"> -->
-           <f7-button round outline v-bind="{ active: isActive }" @click="toggle">{{ title }}</f7-button>
+           <f7-button round outline v-bind="{ active: isActive }" @click="toggle" panel-close>{{ title }}</f7-button>
          <!-- </f7-segmented> -->
   </template>
 
 
   <template id="speed-changer-template">
     <f7-block>
-      <!-- <f7-row no-gap>
+      <f7-row no-gap>
         <f7-col width="50">
           <f7-stepper fill small round color="orange"
             :value="speed"
             :min="minSpeed"
             :max="maxSpeed"
-            :step="0.1"
             :autorepeat="true"
-            :manual-input-mode="true"
+            :input-readonly="true"
             :decimal-point="2"
-            @stepper:minusclick="onSpeedChanged"
-            @stepper:plusclick="onSpeedChanged"
+            @stepper:minusclick="addSpeed(-0.01)"
+            @stepper:plusclick="addSpeed(0.01)"
           ></f7-stepper>
         </f7-col>
         <f7-col width="50">
@@ -210,15 +197,14 @@
             :value="speed"
             :min="minSpeed"
             :max="maxSpeed"
-            :step="1"
             :autorepeat="true"
-            :manual-input-mode="true"
+            :input-readonly="true"
             :decimal-point="2"
-            @stepper:minusclick="onSpeedChanged"
-            @stepper:plusclick="onSpeedChanged"
+            @stepper:minusclick="addSpeed(-1)"
+            @stepper:plusclick="addSpeed(1)"
           ></f7-stepper>
         </f7-col>
-      </f7-row> -->
+      </f7-row>
       <f7-row no-gap>
         <f7-col width="10">
           <f7-icon material="directions_run"></f7-icon>
@@ -248,7 +234,7 @@
           <f7-button small fill
             :style="'background-color:'+col"
             @click="removeColor(col)">
-            {{col}}
+            Del {{col}}
           </f7-button>
         </f7-col>
       </f7-row>
@@ -308,14 +294,86 @@
 
   <template id="gyro-template">
     <f7-block>
-
       <div class="garden">
         <div class="ball"></div>
       </div>
-
       <pre class="output"></pre>
-
    </f7-block>
+  </template>
+
+  <template id="pulse-template">
+    <f7-block>
+      <f7-row no-gap>
+        <f7-col width="10">
+          <f7-icon material="color_lens"></f7-icon>
+        </f7-col>
+        <f7-col width="90">
+          <f7-range
+           :min="0"
+           :max="255"
+           :step="1"
+           :value="100"
+           color="red"
+           @range:change="onRedChange"
+          ></f7-range>
+        </f7-col>
+      </f7-row>
+      <f7-row no-gap>
+        <f7-col width="10">
+          <f7-icon material="brush"></f7-icon>
+        </f7-col>
+      <f7-col width="90">
+        <f7-range
+         :min="0"
+         :max="255"
+         :step="1"
+         :value="100"
+         color="green"
+         @range:change="onGreenChange"
+         ></f7-range>
+      </f7-col>
+    </f7-row>
+    <f7-row no-gap>
+      <f7-col width="10">
+        <f7-icon material="format_paint"></f7-icon>
+      </f7-col>
+    <f7-col width="90">
+      <f7-range
+       :min="0"
+       :max="255"
+       :step="1"
+       :value="100"
+       color="blue"
+       @range:change="onBlueChange"
+       ></f7-range>
+    </f7-col>
+    </f7-row>
+    <f7-row no-gap>
+      <f7-col width="10">
+        <f7-icon material="directions_run"></f7-icon>
+      </f7-col>
+      <f7-col width="90">
+        <f7-range
+         :min="minSpeed"
+         :max="maxSpeed"
+         :step="1"
+         :value="speed"
+         color="yellow"
+         @range:changed="onSpeedChanged"
+         ></f7-range>
+      </f7-col>
+  </f7-row>
+    <f7-button big fill
+      :style="'background-color:'+color"
+      @click="sendPulse">
+      Send Pulse {{color}} Speed:{{speed}}
+    </f7-button>
+   </f7-block>
+  </template>
+
+  <template id="pong-template">
+    <canvas id="myCanvas" width="200" height="100" style="border:1px solid #000000;">
+    </canvas>
   </template>
 
 

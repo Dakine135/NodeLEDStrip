@@ -43,14 +43,18 @@ io.on('connect', function(socket){
         case 'settings':
           strip.updateSettings(data.settings);
           break;
+        case 'pulse':
+          strip.sendPulse(data.pulse);
+          break;
         default:
          console.log('unknown event:',data);
       }
       io.emit("clientUpdate", strip.package());
     });
 
+    var tiltCount = 0;
     socket.on('tilt', function(data){
-      console.log(data);
+      console.log(tiltCount, data);
       if(strip.stateName == 'tilt'){
         let point = {id: socket.id, y:data.y};
         strip.state.addUpdatePoint(point);

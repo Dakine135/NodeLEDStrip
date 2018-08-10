@@ -76,6 +76,12 @@ class Strip
     this.stateSettings.update(data);
   }
 
+  sendPulse(pulse){
+    if(this.stateName == 'pulse'){
+      this.state.sendPulse(pulse);
+    }
+  }
+
   // rainbow-colors, taken from http://goo.gl/Cs3H0v
   colorwheel(pos) {
     pos = 255 - pos;

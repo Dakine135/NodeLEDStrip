@@ -11,10 +11,10 @@ class Tilt{
     }
 
     for(var clientId in this.points) {
-      // console.log("this.points:", this.points);
-      let y = this.points[clientId].y;
-      let ledIndex = this.map_range(y, 0, 180, 0, this.strip.totalLeds);
-      this.strip.pixelData[i] = 0xFFFFFF;
+      let y = this.points[clientId];
+      let ledIndex = this.strip.totalLeds - this.map_range(y, 0, 180, 0, this.strip.totalLeds);
+      // console.log(clientId, y, ledIndex);
+      this.strip.pixelData[ledIndex] = 0xFFFFFF;
     }
 
 
