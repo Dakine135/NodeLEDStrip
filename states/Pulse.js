@@ -34,6 +34,7 @@ class Pulse{
     var deleteIndex = 0;
     while(deleteIndex < this.pulses.length){
       if(this.pulses[deleteIndex].index == -1){
+        console.log("delete pulse", this.pulses[deleteIndex]);
         this.pulses.splice(deleteIndex, 1);
       } else {
         deleteIndex++;
@@ -44,6 +45,7 @@ class Pulse{
     for(var i=0; i < this.pulses.length; i++){
       //draw at index
       let index = Math.floor(this.pulses[i].index);
+      console.log("draw at ", index, this.pulses[i]);
       this.strip.pixelData[indexFloor] = this.pulses[i].color;
       //increment based in its speed
       this.pulses[i].index = this.pulses[i].index + (delta * this.pulses[i].speed);
@@ -70,13 +72,13 @@ class Pulse{
   }//update
 
   sendPulse(pulse){
-    console.log("SendPulse", pulse);
+    console.log("create Pulse", pulse);
     this.pulses.push({
         color: pulse.color,
         speed: pulse.speed,
         index: 0
     });
-    console.log("this.pulses", this.pulses);
+    // console.log("this.pulses", this.pulses);
   }//end sendPulse
 }
 
