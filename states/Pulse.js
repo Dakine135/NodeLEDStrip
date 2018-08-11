@@ -46,7 +46,7 @@ class Pulse{
       //draw at index
       let index = Math.floor(this.pulses[i].index);
       console.log("draw at ", index, this.pulses[i]);
-      this.strip.pixelData[indexFloor] = this.pulses[i].color;
+      this.strip.pixelData[indexFloor] = parseInt(this.pulses[i].color.slice(1), 16);
       //increment based in its speed
       this.pulses[i].index = this.pulses[i].index + (delta * this.pulses[i].speed);
       //test for End
