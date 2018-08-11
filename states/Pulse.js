@@ -35,6 +35,7 @@ class Pulse{
     while(deleteIndex < this.pulses.length){
       if(this.pulses[deleteIndex].index == -1){
         console.log("delete pulse", this.pulses[deleteIndex]);
+        console.log("this.pulses",this.pulses);
         this.pulses.splice(deleteIndex, 1);
       } else {
         deleteIndex++;
@@ -44,8 +45,8 @@ class Pulse{
     //client Pulses
     for(var i=0; i < this.pulses.length; i++){
       //draw at index
-      let index = Math.floor(this.pulses[i].index);
-      console.log("draw at ", index, this.pulses[i]);
+      let indexFloor = Math.floor(this.pulses[i].index);
+      // console.log("draw at ", index, this.pulses[i]);
       this.strip.pixelData[indexFloor] = parseInt(this.pulses[i].color.slice(1), 16);
       //increment based in its speed
       this.pulses[i].index = this.pulses[i].index + (delta * this.pulses[i].speed);
