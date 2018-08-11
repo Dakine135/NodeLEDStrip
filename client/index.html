@@ -298,7 +298,53 @@
         <div class="ball"></div>
       </div>
       <pre class="output"></pre>
-   </f7-block>
+
+   <f7-row no-gap>
+     <f7-col width="10">
+       <f7-icon material="color_lens"></f7-icon>
+     </f7-col>
+     <f7-col width="90">
+       <f7-range
+        :min="0"
+        :max="255"
+        :step="1"
+        :value="100"
+        color="red"
+        @range:change="onRedChange"
+       ></f7-range>
+     </f7-col>
+   </f7-row>
+     <f7-row no-gap>
+       <f7-col width="10">
+         <f7-icon material="brush"></f7-icon>
+       </f7-col>
+     <f7-col width="90">
+       <f7-range
+        :min="0"
+        :max="255"
+        :step="1"
+        :value="100"
+        color="green"
+        @range:change="onGreenChange"
+        ></f7-range>
+     </f7-col>
+   </f7-row>
+   <f7-row no-gap>
+     <f7-col width="10">
+       <f7-icon material="format_paint"></f7-icon>
+     </f7-col>
+   <f7-col width="90">
+     <f7-range
+      :min="0"
+      :max="255"
+      :step="1"
+      :value="100"
+      color="blue"
+      @range:change="onBlueChange"
+      ></f7-range>
+   </f7-col>
+   </f7-row>
+  </f7-block>
   </template>
 
   <template id="pulse-template">

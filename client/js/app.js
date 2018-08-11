@@ -83,10 +83,21 @@ Vue.component('gyro-sensor', {
     return {
       angle: null,
       count: 0,
-      data: {}
+      data: {},
+      red: 100,
+      green: 100,
+      blue: 100
     }
   },
-
+  computed: {
+    color: function(){
+      let hexColor = "#" + componentToHex(this.red) +
+                           componentToHex(this.green) +
+                           componentToHex(this.blue);
+      // console.log("hexColor", hexColor);
+      return hexColor;
+    }
+  },
   methods: {
     handleOrientation(event){
       var ball   = document.querySelector('.ball');
@@ -108,7 +119,7 @@ Vue.component('gyro-sensor', {
       y += 90;
       let roundX = Math.round( x);
       let roundY = Math.round( y);
-      let data = {x:roundX, y:roundY};
+      let data = {x:roundX, y:roundY, color: this.color};
 
       //Currently only using y and not x
       //    this.data.x != data.x ||
@@ -125,6 +136,18 @@ Vue.component('gyro-sensor', {
       ball.style.top  = (maxX*x/180 - 10) + "px";
       ball.style.left = (maxY*y/180 - 10) + "px";
 
+    },
+    onRedChange(value){
+      // console.log("Red change: ",value);
+      this.red = value;
+    },
+    onGreenChange(value){
+      // console.log("Green change: ",value);
+      this.green = value;
+    },
+    onBlueChange(value){
+      this.blue = value;
+      // console.log("Blue change: ",this.blue);
     }
   }
 });

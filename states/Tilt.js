@@ -24,6 +24,7 @@ class Tilt{
   }//update
 
   addUpdatePoint(point){
+    // console.log(point);
     let ledIndex = Math.floor(this.strip.totalLeds - this.map_range(point.y, 0, 180, 0, this.strip.totalLeds));
     if(this.points[point.id] == null){
       this.points[point.id] = {
@@ -33,13 +34,15 @@ class Tilt{
       };
     } else {
       this.points[point.id].goal = ledIndex;
+      if(point.color != null){
+        this.points[point.id].color = parseInt(point.color.slice(1), 16);
+      }
     }
-
   }
 
   removePoint(pointId){
-    if(this.points[point.id] != null){
-      delete this.points[point.id];
+    if(this.points[pointId] != null){
+      delete this.points[pointId];
     }
   }
 
