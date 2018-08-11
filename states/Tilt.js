@@ -16,6 +16,8 @@ class Tilt{
       point.index = point.index + move;
       // console.log(clientId, y, ledIndex);
       this.strip.pixelData[point.index] = point.color;
+      if(point.index != 0) this.strip.pixelData[point.index-1] = point.color;
+      if(point.index != this.strip.totalLeds) this.strip.pixelData[point.index+1] = point.color;
     }
 
 
