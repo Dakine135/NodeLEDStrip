@@ -13,7 +13,7 @@ class Tilt{
     for(var clientId in this.points) {
       let y = this.points[clientId];
       let ledIndex = this.strip.totalLeds - this.map_range(y, 0, 180, 0, this.strip.totalLeds);
-      // console.log(clientId, y, ledIndex);
+      console.log(clientId, y, ledIndex);
       this.strip.pixelData[ledIndex] = 0xFFFFFF;
     }
 

@@ -8,6 +8,7 @@ var io = require('socket.io')(server);
 const gameloop = require('node-gameloop');
 
 var NUM_LEDS = 217;
+var PORT = 80;
 var STRIP = require("./Strip.js");
 const isPi = require('detect-rpi');
 var strip = new STRIP(isPi(), NUM_LEDS);
@@ -24,10 +25,10 @@ process.on('SIGINT', function ()
 app.use(express.static('client'));
 
 // Listen on port 8000, IP defaults to 127.0.0.1
-server.listen(8000);
+server.listen(PORT);
 
 // Put a friendly message on the terminal
-console.log("Server running at http://127.0.0.1:8000/");
+console.log("Node LED Server running on Port", PORT);
 
 io.on('connect', function(socket){
     console.log("Connection ", socket.id);
@@ -52,9 +53,8 @@ io.on('connect', function(socket){
       io.emit("clientUpdate", strip.package());
     });
 
-    var tiltCount = 0;
     socket.on('tilt', function(data){
-      console.log(tiltCount, data);
+      // console.log(data);
       if(strip.stateName == 'tilt'){
         let point = {id: socket.id, y:data.y};
         strip.state.addUpdatePoint(point);
