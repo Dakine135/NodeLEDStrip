@@ -63,6 +63,7 @@ io.on('connect', function(socket){
 
     socket.on('disconnect', function(){
       console.log("Disconect: ", socket.id);
+      if(strip.stateName == 'tilt') strip.state.removePoint(socket.id);
     });
 });
 

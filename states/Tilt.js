@@ -11,21 +11,34 @@ class Tilt{
     }
 
     for(var clientId in this.points) {
-      let y = this.points[clientId];
-      let ledIndex = Math.floor(this.strip.totalLeds - this.map_range(y, 0, 180, 0, this.strip.totalLeds));
-      console.log(clientId, y, ledIndex);
-      this.strip.pixelData[ledIndex] = 0xFFFFFF;
+      let point = this.points[clientId];
+      let move = Math.ceil(point.goal - point.index);
+      point.index = point.index + move;
+      // console.log(clientId, y, ledIndex);
+      this.strip.pixelData[point.index] = point.color;
     }
 
 
   }//update
 
   addUpdatePoint(point){
-    this.points[point.id] = point.y
+    let ledIndex = Math.floor(this.strip.totalLeds - this.map_range(point.y, 0, 180, 0, this.strip.totalLeds));
+    if(this.points[point.id] == null){
+      this.points[point.id] = {
+        goal: ledIndex,
+        index: ledIndex,
+        color: 0xFFFFFF
+      };
+    } else {
+      this.points[point.id].goal = ledIndex;
+    }
+
   }
 
   removePoint(pointId){
-
+    if(this.points[point.id] != null){
+      delete this.points[point.id];
+    }
   }
 
   map_range(value, low1, high1, low2, high2) {
