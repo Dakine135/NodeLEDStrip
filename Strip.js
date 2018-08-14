@@ -66,6 +66,10 @@ class Strip
           this.state = new TILT(this);
           this.stateName = 'tilt';
           break;
+        case "pong":
+          this.state = null;
+          this.stateName = 'pong';
+          break;
         default:
           console.log("invalid stateName");
       }//end switch

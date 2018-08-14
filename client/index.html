@@ -44,6 +44,17 @@
       background: green;
       border-radius: 100%;
     }
+
+    canvas {
+      width: 100%;
+    }
+
+    html, body {
+      overflow-x: hidden;
+    }
+    body {
+      position: relative;
+    }
   </style>
 </head>
 <body>
@@ -65,12 +76,13 @@
                 <mode-switch title="Fade" inital-state-name='fade'></mode-switch>
                 <mode-switch title="Pulse" inital-state-name='pulse'></mode-switch>
                 <mode-switch title="Tilt" inital-state-name='tilt'></mode-switch>
+                <mode-switch title="Pong" inital-state-name='pong'></mode-switch>
               </f7-list>
             </f7-block>
             <f7-block-title>Coming?</f7-block-title>
             <f7-block>
               <f7-list>
-                <button class="button col">Pong</button>
+                <!-- <button class="button col">Pong</button> -->
                 <button class="button col">Draw on Arch</button>
                 <button class="button col">Respond to Music</button>
                 <button class="button col">Respond to Movie/Show</button>
@@ -96,6 +108,9 @@
 
               <template id="off-settings-template" v-if="currentState == 'off'">
                 <f7-button round outline panel-open="left">Current Mode: Off</f7-button>
+                <f7-list>
+                  <f7-list-item link="/about/" title="About"></f7-list-item>
+                </f7-list>
               </template>
 
               <template id="rainbow-settings-template" v-if="currentState == 'rainbow'">
@@ -121,11 +136,13 @@
                 <gyro-sensor></gyro-sensor>
               </template>
 
+              <template id="tilt-settings-template" v-if="currentState == 'pong'">
+                <pong-game></pong-game>
+              </template>
+
           </f7-block>
 
-          <f7-list>
-            <f7-list-item link="/about/" title="About"></f7-list-item>
-          </f7-list>
+
         </f7-page>
       </f7-view>
 
@@ -418,7 +435,7 @@
   </template>
 
   <template id="pong-template">
-    <canvas id="myCanvas" width="200" height="100" style="border:1px solid #000000;">
+    <canvas id="pongCanvas" width="200" height="100" style="border:1px solid #000000;">
     </canvas>
   </template>
 
