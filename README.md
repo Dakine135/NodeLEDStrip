@@ -1,6 +1,6 @@
 # NodeLEDStrip
 
-This is a project I have wanted to do for awhile now. It incorporates all of what I have learned over the past few years, as well as forcing me to dive into a lot of new stuff.  I currently have 217 Individually Addressable RGB LEDS on a WS2812B model strip. This will be closer to 434 LEDS when it is complete. I had to solder together multiple runs. The entire strip is housed in a aluminum Trim with a diffuser facing 45 degrees out. This runs the length of my large Archway between my dinning and living room. The entire thing is controlled by a raspberry pi utilizing the PWM chip. The strips and the Pi are powered by a 40A 5V switching power supply. The pi is running the code in this repository.
+This is a project I have wanted to do for awhile now. It incorporates all of what I have learned over the past few years, as well as forcing me to dive into a lot of new stuff.  I currently have 217 Individually Addressable RGB LEDS on a WS2812B model strip. This will be closer to 434 LEDS when it is complete. I had to solder together multiple runs. The entire strip is housed in a aluminum Trim with a diffuser facing 45 degrees out. This runs the length of my large Archway between my dinning and living room. The entire thing is controlled by a raspberry pi utilizing the PWM chip. The pi is running the code in this repository.
 
 I have currently only installed and wired up one side of the arch, but I intend to do both sides.
 
