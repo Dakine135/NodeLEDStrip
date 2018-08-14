@@ -73,4 +73,4 @@ Used for cutting trim to length.
 ## Acknowledgments
 
 * Just a shout-out to my wife who has been very supportive of my crazy projects.
-* Also to my Friends who have encouraged and inspired.S
+* Also to my Friends who have encouraged and inspired.
