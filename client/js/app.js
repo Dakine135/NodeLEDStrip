@@ -25,26 +25,25 @@ Vue.component('pong-game', {
     this.canvas = document.getElementById("pongCanvas");
     this.render=this.canvas.getContext("2d");
 
-    //window.devicePixelRatio ||
-    // var ratio = 1;
-    // console.log(screen.width, ratio);
-    // var w = screen.width * ratio - 100;
-    // var h = screen.height * ratio - 100;
     this.canvas.width = screen.width;
-    this.canvas.height = screen.height * 0.9;
+    this.canvas.height = screen.height * 0.80;
 
     // Create gradient
+    console.log(this.canvas);
     var grd = this.render.createRadialGradient(
-      this.canvas.width/2,
-      this.canvas.height/2, 5,
-      this.canvas.width/2,
-      this.canvas.height/2, 100);
+      180,
+      256, 50,
+      360,
+      512, 100);
     grd.addColorStop(0, "red");
     grd.addColorStop(1, "white");
 
     // Fill with gradient
     this.render.fillStyle = grd;
     this.render.fillRect(10, 10, 150, 80);
+  },
+  methods: {
+
   }
 });
 
@@ -310,7 +309,7 @@ var mainApp = new Vue({
   },
 }); // end vue app
 
-socket.emit('event', {state: 'pong'});
+socket.emit('event', {state: 'clock'});
 
 socket.on('clientUpdate', function(data){
   console.log("clientUpdate: ", data);

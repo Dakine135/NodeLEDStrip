@@ -49,12 +49,6 @@
       width: 100%;
     }
 
-    html, body {
-      overflow-x: hidden;
-    }
-    body {
-      position: relative;
-    }
   </style>
 </head>
 <body>
@@ -72,17 +66,18 @@
             <f7-block>
               <f7-list>
                 <mode-switch title="Off" inital-state-name='off'></mode-switch>
+                <mode-switch title="Clock" inital-state-name='clock'></mode-switch>
                 <mode-switch title="Rainbow" inital-state-name='rainbow'></mode-switch>
                 <mode-switch title="Fade" inital-state-name='fade'></mode-switch>
                 <mode-switch title="Pulse" inital-state-name='pulse'></mode-switch>
                 <mode-switch title="Tilt" inital-state-name='tilt'></mode-switch>
-                <mode-switch title="Pong" inital-state-name='pong'></mode-switch>
+                <!-- <mode-switch title="Pong" inital-state-name='pong'></mode-switch> -->
               </f7-list>
             </f7-block>
             <f7-block-title>Coming?</f7-block-title>
             <f7-block>
               <f7-list>
-                <!-- <button class="button col">Pong</button> -->
+                <button class="button col">Pong</button>
                 <button class="button col">Draw on Arch</button>
                 <button class="button col">Respond to Music</button>
                 <button class="button col">Respond to Movie/Show</button>
@@ -136,8 +131,12 @@
                 <gyro-sensor></gyro-sensor>
               </template>
 
-              <template id="tilt-settings-template" v-if="currentState == 'pong'">
+              <template id="pong-settings-template" v-if="currentState == 'pong'">
                 <pong-game></pong-game>
+              </template>
+
+              <template id="clock-settings-template" v-if="currentState == 'clock'">
+                <f7-button round outline panel-open="left">Current Mode: Clock</f7-button>
               </template>
 
           </f7-block>
@@ -196,7 +195,7 @@
 
   <template id="speed-changer-template">
     <f7-block>
-      <f7-row no-gap>
+      <!-- <f7-row no-gap>
         <f7-col width="50">
           <f7-stepper fill small round color="orange"
             :value="speed"
@@ -221,7 +220,7 @@
             @stepper:plusclick="addSpeed(1)"
           ></f7-stepper>
         </f7-col>
-      </f7-row>
+      </f7-row> -->
       <f7-row no-gap>
         <f7-col width="10">
           <f7-icon material="directions_run"></f7-icon>

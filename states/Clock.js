@@ -1,0 +1,89 @@
+class Clock{
+  constructor(STRIP){
+    this.strip = STRIP;
+
+    //initalize time
+    this.time = new Date();
+    this.hours = this.time.getHours();
+    this.firstDigit = Math.floor(this.hours / 10);
+    this.secondDigit = this.hours % 10;
+    this.minutes = this.time.getMinutes();
+    this.second = 0;
+    console.log(this.firstDigit, this.secondDigit, this.minutes);
+
+    //settings for where to display the Clock
+    this.startTop = 61;
+    this.endTop = 158;
+    this.length = this.endTop - this.startTop;
+    this.startFirstDigit = this.endTop - 1;
+    this.startSecondDigit = this.endTop - 4;
+    this.startMinutes = this.startTop + 60;
+    this.seperators = [
+      this.endTop,        //begin hour
+      (this.endTop - 3),  //middle between digits
+      (this.endTop - 14),  //end hour
+      this.startTop,       //60 minutes
+      (this.startTop + 10),  //50 minutes
+      (this.startTop + 20),  //40 minutes
+      (this.startTop + 30),  //30 minutes
+      (this.startTop + 40),  //20 minutes
+      (this.startTop + 50), //10 minutes
+      (this.startTop + 60)  //0 minutes
+    ];
+
+    //colors
+    this.seperatorColor = 0x0B7A0F;
+    this.blinkingColor = 0xFF3E5E;
+    this.hourColor = 0xCACACA;
+    this.minuteColor = 0xCACACA;
+
+  }//constructor
+
+  update(delta){
+    this.second = this.second + delta;
+    if(this.second >= 1){
+      // console.log(this.second);
+      this.second = 0;
+    }
+
+    this.updateTime();
+
+    //draw time pixels
+    let offset = 0;
+    while(this.firstDigit != 0){
+      this.strip.pixelData[this.startFirstDigit + offset] = this.hourColor;
+      this.firstDigit--;
+      offset++;
+    }
+    offset = 0;
+    while(this.seconDigit != 0){
+      this.strip.pixelData[this.startSecondDigit + offset] = this.hourColor;
+      this.secondDigit--;
+      offset++;
+    }
+    offset = 0;
+    while(this.minutes != 0){
+      this.strip.pixelData[this.startMinutes + offset] = this.minuteColor;
+      this.minutes--;
+      offset++;
+    }
+
+    //draw seperators
+    this.seperators.forEach(function(seperator){
+      this.strip.pixelData[seperator] = this.seperatorColor;
+    }.bind(this));
+
+  }//update
+
+  updateTime(){
+    this.time = new Date();
+    this.hours = this.time.getHours();
+    this.firstDigit = Math.floor(this.hours / 10);
+    this.secondDigit = this.hours % 10;
+    this.minutes = this.time.getMinutes();
+  }
+
+
+}
+
+module.exports = Clock;
