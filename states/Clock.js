@@ -49,20 +49,23 @@ class Clock{
     this.updateTime();
 
     //draw time pixels
+    // console.log("draw first digit");
     let offset = 0;
-    while(this.firstDigit != 0){
+    while(this.firstDigit > 0){
       this.strip.pixelData[this.startFirstDigit + offset] = this.hourColor;
       this.firstDigit--;
       offset++;
     }
+    // console.log("draw second digit");
     offset = 0;
-    while(this.seconDigit != 0){
+    while(this.seconDigit > 0){
       this.strip.pixelData[this.startSecondDigit + offset] = this.hourColor;
       this.secondDigit--;
       offset++;
     }
+    // console.log("draw minutes");
     offset = 0;
-    while(this.minutes != 0){
+    while(this.minutes > 0){
       this.strip.pixelData[this.startMinutes + offset] = this.minuteColor;
       this.minutes--;
       offset++;
@@ -76,6 +79,7 @@ class Clock{
   }//update
 
   updateTime(){
+    // console.log("updateTime");
     this.time = new Date();
     this.hours = this.time.getHours();
     this.firstDigit = Math.floor(this.hours / 10);

@@ -309,7 +309,7 @@ var mainApp = new Vue({
   },
 }); // end vue app
 
-socket.emit('event', {state: 'clock'});
+// socket.emit('event', {state: 'clock'});
 
 socket.on('clientUpdate', function(data){
   console.log("clientUpdate: ", data);
