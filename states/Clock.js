@@ -13,7 +13,7 @@ class Clock{
 
     //settings for where to display the Clock
     this.startTop = 60;
-    this.endTop = 154;
+    this.endTop = 157;
     this.length = this.endTop - this.startTop;
     this.startFirstDigit = this.endTop - 1;
     this.startSecondDigit = this.endTop - 4;
