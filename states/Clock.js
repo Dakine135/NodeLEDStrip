@@ -46,8 +46,10 @@ class Clock{
       this.second = 0;
     }
 
-    //clear STRIP
-    this.strip.pixelData.map(()=>{return 0});
+    //wipe all
+    for (var i=0; i < this.strip.totalLeds; i++){
+        this.strip.pixelData[i] = 0;
+    }
 
     this.updateTime();
 
@@ -55,21 +57,21 @@ class Clock{
     // console.log("draw first digit");
     let offset = 0;
     while(this.firstDigit > 0){
-      this.strip.pixelData[this.startFirstDigit + offset] = this.hourColor;
+      this.strip.pixelData[this.startFirstDigit - offset] = this.hourColor;
       this.firstDigit--;
       offset++;
     }
     // console.log("draw second digit");
     offset = 0;
     while(this.seconDigit > 0){
-      this.strip.pixelData[this.startSecondDigit + offset] = this.hourColor;
+      this.strip.pixelData[this.startSecondDigit - offset] = this.hourColor;
       this.secondDigit--;
       offset++;
     }
     // console.log("draw minutes");
     offset = 0;
     while(this.minutes > 0){
-      this.strip.pixelData[this.startMinutes + offset] = this.minuteColor;
+      this.strip.pixelData[this.startMinutes - offset] = this.minuteColor;
       this.minutes--;
       offset++;
     }
