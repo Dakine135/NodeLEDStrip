@@ -12,8 +12,8 @@ class Clock{
     console.log(this.firstDigit, this.secondDigit, this.minutes);
 
     //settings for where to display the Clock
-    this.startTop = 61;
-    this.endTop = 158;
+    this.startTop = 60;
+    this.endTop = 154;
     this.length = this.endTop - this.startTop;
     this.startFirstDigit = this.endTop - 1;
     this.startSecondDigit = this.endTop - 4;
@@ -46,6 +46,9 @@ class Clock{
       this.second = 0;
     }
 
+    //clear STRIP
+    this.strip.pixelData.map(()=>{return 0});
+
     this.updateTime();
 
     //draw time pixels
@@ -75,6 +78,15 @@ class Clock{
     this.seperators.forEach(function(seperator){
       this.strip.pixelData[seperator] = this.seperatorColor;
     }.bind(this));
+
+    //draw seconds
+    if(this.second <= 0.5){
+      this.strip.pixelData[this.startTop - 2] = this.blinkingColor;
+      this.strip.pixelData[this.startTop - 3] = this.blinkingColor;
+      this.strip.pixelData[this.endTop + 2] = this.blinkingColor;
+      this.strip.pixelData[this.endTop + 3] = this.blinkingColor;
+    }
+
 
   }//update
 
