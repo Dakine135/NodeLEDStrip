@@ -19,6 +19,8 @@ class Clock{
     this.startFirstDigit = this.endTop - 1;
     this.startSecondDigit = this.endTop - 4;
     this.startMinutes = this.startTop + 59;
+    this.leftRangeSeconds = this.strip.totalLeds - (this.endTop + 1);
+    this.rightRangeSeconds = this.startTop - 1;
     this.seperators = [
       this.endTop,        //begin hour
       (this.endTop - 3),  //middle between digits
@@ -84,10 +86,11 @@ class Clock{
 
     //draw seconds
     if(this.second <= 0.5){
-      this.strip.pixelData[this.startTop - 2] = this.blinkingColor;
-      this.strip.pixelData[this.startTop - 3] = this.blinkingColor;
-      this.strip.pixelData[this.endTop + 2] = this.blinkingColor;
-      this.strip.pixelData[this.endTop + 3] = this.blinkingColor;
+      let leftOffset = this.mapRange(this.seconds, 0, 59, 0, this.leftRangeSeconds);
+      let leftIndex = this.strip.totalLeds - leftOffset;
+      let rightOffset = this.mapRange(this.seconds, 0, 59, 0, this.rightRangeSeconds);
+      this.strip.pixelData[leftIndex] = this.blinkingColor;
+      this.strip.pixelData[rightOffset] = this.blinkingColor;
     }
 
 
@@ -101,6 +104,10 @@ class Clock{
     this.secondDigit = this.hours % 10;
     this.minutes = this.time.getMinutes();
     this.seconds = this.time.getSeconds();
+  }
+
+  mapRange(value, low1, high1, low2, high2) {
+   return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
   }
 
 
