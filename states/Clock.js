@@ -16,8 +16,8 @@ class Clock{
     this.endTop = 157;
     this.length = this.endTop - this.startTop;
     this.startFirstDigit = this.endTop - 1;
-    this.startSecondDigit = this.endTop - 5;
-    this.startMinutes = this.startTop + 60;
+    this.startSecondDigit = this.endTop - 4;
+    this.startMinutes = this.startTop + 59;
     this.seperators = [
       this.endTop,        //begin hour
       (this.endTop - 3),  //middle between digits
@@ -63,7 +63,7 @@ class Clock{
     }
     // console.log("draw second digit");
     offset = 0;
-    while(this.seconDigit > 0){
+    while(this.secondDigit > 0){
       this.strip.pixelData[this.startSecondDigit - offset] = this.hourColor;
       this.secondDigit--;
       offset++;
