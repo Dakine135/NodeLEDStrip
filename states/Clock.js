@@ -16,7 +16,7 @@ class Clock{
     this.endTop = 157;
     this.length = this.endTop - this.startTop;
     this.startFirstDigit = this.endTop - 1;
-    this.startSecondDigit = this.endTop - 4;
+    this.startSecondDigit = this.endTop - 5;
     this.startMinutes = this.startTop + 60;
     this.seperators = [
       this.endTop,        //begin hour
