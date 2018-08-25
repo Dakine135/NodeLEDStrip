@@ -8,6 +8,7 @@ class Clock{
     this.firstDigit = Math.floor(this.hours / 10);
     this.secondDigit = this.hours % 10;
     this.minutes = this.time.getMinutes();
+    this.seconds = this.time.getSeconds();
     this.second = 0;
     console.log(this.firstDigit, this.secondDigit, this.minutes);
 
@@ -99,6 +100,7 @@ class Clock{
     this.firstDigit = Math.floor(this.hours / 10);
     this.secondDigit = this.hours % 10;
     this.minutes = this.time.getMinutes();
+    this.seconds = this.time.getSeconds();
   }
 
 
