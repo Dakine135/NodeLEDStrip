@@ -10,6 +10,10 @@ class Strip
     this.isRunningOnPi = isRunningOnPi;
     this.strip = null;
 
+    this.startTop = 60;
+    this.endTop = 157;
+    this.toplength = this.endTop - this.startTop;
+
     //settings for states
     let STATESETTINGS = require("./states/stateSettings.js");
     this.stateSettings = new STATESETTINGS();

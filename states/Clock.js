@@ -13,26 +13,24 @@ class Clock{
     console.log(this.firstDigit, this.secondDigit, this.minutes);
 
     //settings for where to display the Clock
-    this.startTop = 60;
-    this.endTop = 157;
-    this.length = this.endTop - this.startTop;
-    this.startFirstDigit = this.endTop - 1;
-    this.startSecondDigit = this.endTop - 4;
-    this.startMinutes = this.startTop + 59;
-    this.leftRangeSeconds = this.strip.totalLeds - (this.endTop + 1);
-    this.rightRangeSeconds = this.startTop - 1;
+    this.startFirstDigit = this.strip.endTop - 1;
+    this.startSecondDigit = this.strip.endTop - 4;
+    this.startMinutes = this.strip.startTop + 59;
+    this.leftRangeSeconds = this.strip.totalLeds - (this.strip.endTop + 1);
+    this.rightRangeSeconds = this.strip.startTop - 1;
     this.seperators = [
-      this.endTop,        //begin hour
-      (this.endTop - 3),  //middle between digits
-      (this.endTop - 14),  //end hour
-      this.startTop,       //60 minutes
-      (this.startTop + 10),  //50 minutes
-      (this.startTop + 20),  //40 minutes
-      (this.startTop + 30),  //30 minutes
-      (this.startTop + 40),  //20 minutes
-      (this.startTop + 50), //10 minutes
-      (this.startTop + 60)  //0 minutes
+      this.strip.endTop,        //begin hour
+      (this.strip.endTop - 3),  //middle between digits
+      (this.strip.endTop - 14),  //end hour
+      this.strip.startTop,       //60 minutes
+      (this.strip.startTop + 10),  //50 minutes
+      (this.strip.startTop + 20),  //40 minutes
+      (this.strip.startTop + 30),  //30 minutes
+      (this.strip.startTop + 40),  //20 minutes
+      (this.strip.startTop + 50), //10 minutes
+      (this.strip.startTop + 60)  //0 minutes
     ];
+    this.seperatorOverwrite = null;
 
     //colors
     this.seperatorColor = 0x0B7A0F;
@@ -55,6 +53,9 @@ class Clock{
     }
 
     this.updateTime();
+    if((this.minutes % 10) == 0){
+      this.seperatorOverwrite = this.minutes;
+    } else this.seperatorOverwrite = null;
 
     //draw time pixels
     // console.log("draw first digit");
@@ -103,7 +104,9 @@ class Clock{
     this.firstDigit = Math.floor(this.hours / 10);
     this.secondDigit = this.hours % 10;
     this.minutes = this.time.getMinutes();
+    let lastSecond = this.seconds;
     this.seconds = this.time.getSeconds();
+    if(lastSecond != this.seconds) console.log(this.firstDigit, this.secondDigit, this.minutes, this.seconds);
   }
 
   mapRange(value, low1, high1, low2, high2) {
