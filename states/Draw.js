@@ -1,4 +1,4 @@
-class Pong{
+class Draw{
   constructor(STRIP){
     this.strip = STRIP;
   }//constructor
@@ -8,4 +8,4 @@ class Pong{
   }//update
 }
 
-module.exports = Pong;
+module.exports = Draw;

@@ -1,13 +1,4 @@
 var socket = io();
-// socket.on('connect', function(){
-//   console.log("connected to Server");
-// });
-
-// socket.on('disconnect', function(){
-//   console.log("lost Connection with Server");
-// });
-
-// socket.emit('event', "test");
 
 function componentToHex(c) {
     var hex = c.toString(16);
@@ -20,6 +11,40 @@ Framework7.use(Framework7Vue);
 // Init Page Components
 Vue.component('page-about', {
   template: '#page-about'
+});
+
+Vue.component('pong-game', {
+  template: '#pong-template',
+  data: function(){
+    return {
+      canvas: null,
+      render: null
+    }
+  },
+  mounted(){
+    this.canvas = document.getElementById("pongCanvas");
+    this.render=this.canvas.getContext("2d");
+
+    this.canvas.width = screen.width;
+    this.canvas.height = screen.height * 0.80;
+
+    // Create gradient
+    console.log(this.canvas);
+    var grd = this.render.createRadialGradient(
+      180,
+      256, 50,
+      360,
+      512, 100);
+    grd.addColorStop(0, "red");
+    grd.addColorStop(1, "white");
+
+    // Fill with gradient
+    this.render.fillStyle = grd;
+    this.render.fillRect(10, 10, 150, 80);
+  },
+  methods: {
+
+  }
 });
 
 Vue.component('send-pulse', {
@@ -70,13 +95,8 @@ Vue.component('send-pulse', {
 Vue.component('gyro-sensor', {
   template: '#gyro-template',
   mounted() {
-    if (window.DeviceMotionEvent == undefined) {
-        //No accelerometer is present. Use buttons.
-        // alert("no accelerometer");
-    } else {
-        // alert("accelerometer found");
-        // window.addEventListener("devicemotion", accelerometerUpdate, true);
-        window.addEventListener('deviceorientation', this.handleOrientation);
+    if (window.DeviceMotionEvent != undefined) {
+      window.addEventListener('deviceorientation', this.handleOrientation);
     }
   },
   data: function(){
@@ -288,6 +308,8 @@ var mainApp = new Vue({
     }
   },
 }); // end vue app
+
+// socket.emit('event', {state: 'clock'});
 
 socket.on('clientUpdate', function(data){
   console.log("clientUpdate: ", data);

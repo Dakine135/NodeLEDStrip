@@ -66,6 +66,8 @@ Used for cutting trim to length.
 * [VueJS](https://vuejs.org/) - Used for Virtual Dom rendering, client responsiveness
 * [Framework7](https://framework7.io/) - CSS framework, Designed for mobile webapp
 
+## Application Features
+
 ## Authors
 
 * **Dustin Welborn** - [GitHub](https://github.com/Dakine135) - [Youtube](https://www.youtube.com/channel/UCDjcmcvaXppX6DxXJUbJFSQ) - [LinkedIn](https://www.linkedin.com/in/dustin-n-welborn-401849103/)

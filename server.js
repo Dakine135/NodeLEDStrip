@@ -35,7 +35,7 @@ io.on('connect', function(socket){
     socket.emit("clientUpdate", strip.package());
 
     socket.on('event', function(data){
-      // console.log("Event: ", data);
+      console.log("Event: ", data);
       let key = Object.keys(data)[0];
       switch(key){
         case 'state':

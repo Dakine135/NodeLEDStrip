@@ -66,6 +66,21 @@ class Strip
           this.state = new TILT(this);
           this.stateName = 'tilt';
           break;
+        case "pong":
+          let PONG = require("./states/Pong.js");
+          this.state = new PONG(this);
+          this.stateName = 'pong';
+          break;
+        case "clock":
+          let CLOCK = require("./states/Clock.js");
+          this.state = new CLOCK(this);
+          this.stateName = 'clock';
+          break;
+        case "draw":
+          let DRAW = require("./states/Draw.js");
+          this.state = new DRAW(this);
+          this.stateName = 'draw';
+          break;
         default:
           console.log("invalid stateName");
       }//end switch

@@ -1,0 +1,116 @@
+class Clock{
+  constructor(STRIP){
+    this.strip = STRIP;
+
+    //initalize time
+    this.time = new Date();
+    this.hours = this.time.getHours();
+    this.firstDigit = Math.floor(this.hours / 10);
+    this.secondDigit = this.hours % 10;
+    this.minutes = this.time.getMinutes();
+    this.seconds = this.time.getSeconds();
+    this.second = 0;
+    console.log(this.firstDigit, this.secondDigit, this.minutes);
+
+    //settings for where to display the Clock
+    this.startTop = 60;
+    this.endTop = 157;
+    this.length = this.endTop - this.startTop;
+    this.startFirstDigit = this.endTop - 1;
+    this.startSecondDigit = this.endTop - 4;
+    this.startMinutes = this.startTop + 59;
+    this.leftRangeSeconds = this.strip.totalLeds - (this.endTop + 1);
+    this.rightRangeSeconds = this.startTop - 1;
+    this.seperators = [
+      this.endTop,        //begin hour
+      (this.endTop - 3),  //middle between digits
+      (this.endTop - 14),  //end hour
+      this.startTop,       //60 minutes
+      (this.startTop + 10),  //50 minutes
+      (this.startTop + 20),  //40 minutes
+      (this.startTop + 30),  //30 minutes
+      (this.startTop + 40),  //20 minutes
+      (this.startTop + 50), //10 minutes
+      (this.startTop + 60)  //0 minutes
+    ];
+
+    //colors
+    this.seperatorColor = 0x0B7A0F;
+    this.blinkingColor = 0xFF3E5E;
+    this.hourColor = 0xCACACA;
+    this.minuteColor = 0xCACACA;
+
+  }//constructor
+
+  update(delta){
+    this.second = this.second + delta;
+    if(this.second >= 1){
+      // console.log(this.second);
+      this.second = 0;
+    }
+
+    //wipe all
+    for (var i=0; i < this.strip.totalLeds; i++){
+        this.strip.pixelData[i] = 0;
+    }
+
+    this.updateTime();
+
+    //draw time pixels
+    // console.log("draw first digit");
+    let offset = 0;
+    while(this.firstDigit > 0){
+      this.strip.pixelData[this.startFirstDigit - offset] = this.hourColor;
+      this.firstDigit--;
+      offset++;
+    }
+    // console.log("draw second digit");
+    offset = 0;
+    while(this.secondDigit > 0){
+      this.strip.pixelData[this.startSecondDigit - offset] = this.hourColor;
+      this.secondDigit--;
+      offset++;
+    }
+    // console.log("draw minutes");
+    offset = 0;
+    while(this.minutes > 0){
+      this.strip.pixelData[this.startMinutes - offset] = this.minuteColor;
+      this.minutes--;
+      offset++;
+    }
+
+    //draw seperators
+    this.seperators.forEach(function(seperator){
+      this.strip.pixelData[seperator] = this.seperatorColor;
+    }.bind(this));
+
+    //draw seconds
+    if(this.second <= 0.5){
+      let leftOffset = this.mapRange(this.seconds, 0, 59, 0, this.leftRangeSeconds);
+      let leftIndex = this.strip.totalLeds - leftOffset;
+      let rightOffset = this.mapRange(this.seconds, 0, 59, 0, this.rightRangeSeconds);
+      this.strip.pixelData[leftIndex] = this.blinkingColor;
+      this.strip.pixelData[rightOffset] = this.blinkingColor;
+    }
+
+
+  }//update
+
+  updateTime(){
+    // console.log("updateTime");
+    this.time = new Date();
+    this.hours = this.time.getHours();
+    this.firstDigit = Math.floor(this.hours / 10);
+    this.secondDigit = this.hours % 10;
+    this.minutes = this.time.getMinutes();
+    this.seconds = this.time.getSeconds();
+  }
+
+  mapRange(value, low1, high1, low2, high2) {
+   return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
+  }
+
+
+}
+
+module.exports = Clock;
