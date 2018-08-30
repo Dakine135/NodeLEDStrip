@@ -106,7 +106,7 @@ class Clock{
       let leftSecPos = Math.round(this.mapRange(this.secPos, 0, 100, 0, this.leftRangeSeconds));
       let leftIndex = this.strip.totalLeds - leftSecPos;
       let rightSecPos = Math.round(this.mapRange(this.secPos, 0, 100, 0, this.rightRangeSeconds));
-      console.log(leftIndex, rightSecPos);
+      // console.log(leftIndex, rightSecPos);
       this.strip.pixelData[leftIndex - 1] = this.blinkingColor;
       this.strip.pixelData[leftIndex] = this.blinkingColor;
       this.strip.pixelData[rightSecPos + 1] = this.blinkingColor;
@@ -137,9 +137,9 @@ class Clock{
     this.secondDigit = this.hours % 10;
     this.minutes = this.time.getMinutes();
     // this.minutes = 30;
-    let lastSecond = this.seconds;
+    // let lastSecond = this.seconds;
     this.seconds = this.time.getSeconds();
-    if(lastSecond != this.seconds) console.log(this.firstDigit, this.secondDigit, this.minutes, this.seconds);
+    // if(lastSecond != this.seconds) console.log(this.firstDigit, this.secondDigit, this.minutes, this.seconds);
   }
 
   mapRange(value, low1, high1, low2, high2) {
