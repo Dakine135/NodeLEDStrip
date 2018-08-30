@@ -13,6 +13,34 @@ Vue.component('page-about', {
   template: '#page-about'
 });
 
+Vue.component('draw-canvas', {
+  template: '#draw-template',
+  data: function(){
+    return {
+      canvas: null,
+      render: null
+    }
+  },
+  mounted(){
+    // app.panel.disableSwipe("left");
+
+    this.canvas = document.getElementById("drawCanvas");
+    this.render=this.canvas.getContext("2d");
+
+    this.canvas.width = screen.width;
+    this.canvas.height = screen.height * 0.8;
+
+    // Create gradient
+    console.log(this.canvas);
+
+    this.render.fillRect(10, 10, 150, 80);
+    console.log(mainApp);
+  },
+  methods: {
+
+  }
+});
+
 Vue.component('pong-game', {
   template: '#pong-template',
   data: function(){
@@ -309,7 +337,7 @@ var mainApp = new Vue({
   },
 }); // end vue app
 
-socket.emit('event', {state: 'clock'});
+socket.emit('event', {state: 'draw'});
 
 socket.on('clientUpdate', function(data){
   console.log("clientUpdate: ", data);

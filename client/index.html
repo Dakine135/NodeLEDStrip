@@ -71,6 +71,7 @@
                 <mode-switch title="Fade" inital-state-name='fade'></mode-switch>
                 <mode-switch title="Pulse" inital-state-name='pulse'></mode-switch>
                 <mode-switch title="Tilt" inital-state-name='tilt'></mode-switch>
+                <mode-switch title="Draw" inital-state-name='draw'></mode-switch>
                 <!-- <mode-switch title="Pong" inital-state-name='pong'></mode-switch> -->
               </f7-list>
             </f7-block>
@@ -139,6 +140,10 @@
                 <f7-button round outline panel-open="left">Current Mode: Clock</f7-button>
               </template>
 
+              <template id="draw-settings-template" v-if="currentState == 'draw'">
+                <draw-canvas></draw-canvas>
+              </template>
+
           </f7-block>
 
 
@@ -195,32 +200,6 @@
 
   <template id="speed-changer-template">
     <f7-block>
-      <!-- <f7-row no-gap>
-        <f7-col width="50">
-          <f7-stepper fill small round color="orange"
-            :value="speed"
-            :min="minSpeed"
-            :max="maxSpeed"
-            :autorepeat="true"
-            :input-readonly="true"
-            :decimal-point="2"
-            @stepper:minusclick="addSpeed(-0.01)"
-            @stepper:plusclick="addSpeed(0.01)"
-          ></f7-stepper>
-        </f7-col>
-        <f7-col width="50">
-          <f7-stepper fill small round color="orange"
-            :value="speed"
-            :min="minSpeed"
-            :max="maxSpeed"
-            :autorepeat="true"
-            :input-readonly="true"
-            :decimal-point="2"
-            @stepper:minusclick="addSpeed(-1)"
-            @stepper:plusclick="addSpeed(1)"
-          ></f7-stepper>
-        </f7-col>
-      </f7-row> -->
       <f7-row no-gap>
         <f7-col width="10">
           <f7-icon material="directions_run"></f7-icon>
@@ -435,6 +414,11 @@
 
   <template id="pong-template">
     <canvas id="pongCanvas" width="200" height="100" style="border:1px solid #000000;">
+    </canvas>
+  </template>
+
+  <template id="draw-template">
+    <canvas id="drawCanvas" width="200" height="100" style="border:1px solid #000000;">
     </canvas>
   </template>
 
