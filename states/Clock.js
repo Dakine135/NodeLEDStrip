@@ -38,9 +38,15 @@ class Clock{
     this.hourColor = 0xCACACA;
     this.minuteColor = 0xCACACA;
 
+    //for second Drop
+    this.secondsDropOn = true;
+    this.secondsDroping = false;
+    this.secPos = 100;
+
   }//constructor
 
   update(delta){
+    //calculate in-between seconds
     this.second = this.second + delta;
     if(this.second >= 1){
       // console.log(this.second);
@@ -53,8 +59,10 @@ class Clock{
     }
 
     this.updateTime();
+
+    //check if minute falls on a seperator
     if((this.minutes % 10) == 0){
-      this.seperatorOverwrite = this.minutes;
+      this.seperatorOverwrite = this.startFirstDigit + this.minutes;
     } else this.seperatorOverwrite = null;
 
     //draw time pixels
@@ -85,15 +93,41 @@ class Clock{
       this.strip.pixelData[seperator] = this.seperatorColor;
     }.bind(this));
 
-    //draw seconds
-    if(this.second <= 0.5){
-      let leftOffset = this.mapRange(this.seconds, 0, 59, 0, this.leftRangeSeconds);
-      let leftIndex = this.strip.totalLeds - leftOffset;
-      let rightOffset = this.mapRange(this.seconds, 0, 59, 0, this.rightRangeSeconds);
-      this.strip.pixelData[leftIndex] = this.blinkingColor;
-      this.strip.pixelData[rightOffset] = this.blinkingColor;
+    //code to draw if minute falls on a seperator
+    if(this.seperatorOverwrite != null){
+      let sepColorRGB = this.strip.int2Rgb(this.seperatorColor);
+      let minColorRGB = this.strip.int2Rgb(this.minuteColor);
+      let newColor = {
+        red: Math.abs(sepColorRGB.red - minColorRGB.red),
+        green: Math.abs(sepColorRGB.green - minColorRGB.green),
+        blue: Math.abs(sepColorRGB.blue - minColorRGB.blue)
+      }
+
+      this.strip.pixelData[this.seperatorOverwrite] = this.strip.rgb2Int(newColor.red, newColor.green, newColor.blue);
     }
 
+    //draw seconds
+    if(this.secondsDropOn && this.secondsDroping){
+      let leftSecPos = this.mapRange(this.secPos, 0, 100, 0, this.leftRangeSeconds);
+      let leftIndex = this.strip.totalLeds - leftSecPos;
+      let rightSecPos = this.mapRange(this.secPos, 0, 100, 0, this.rightRangeSeconds);
+      this.strip.pixelData[leftIndex] = this.blinkingColor;
+      this.strip.pixelData[rightSecPos] = this.blinkingColor;
+      this.secPos--;
+      if(this.secPos <= 0) this.secondsDroping = false;
+    }else{
+      if(this.second <= 0.5){
+        let leftOffset = this.mapRange(this.seconds, 0, 59, 0, this.leftRangeSeconds);
+        let leftIndex = this.strip.totalLeds - leftOffset;
+        let rightOffset = this.mapRange(this.seconds, 0, 59, 0, this.rightRangeSeconds);
+        this.strip.pixelData[leftIndex] = this.blinkingColor;
+        this.strip.pixelData[rightOffset] = this.blinkingColor;
+      }
+    }
+    if(this.secondsDropOn && this.seconds >= 59){
+      this.secondsDroping = true;
+      this.secPos = 100;
+    }
 
   }//update
 
