@@ -13,26 +13,24 @@ class Clock{
     console.log(this.firstDigit, this.secondDigit, this.minutes);
 
     //settings for where to display the Clock
-    this.startTop = 60;
-    this.endTop = 157;
-    this.length = this.endTop - this.startTop;
-    this.startFirstDigit = this.endTop - 1;
-    this.startSecondDigit = this.endTop - 4;
-    this.startMinutes = this.startTop + 59;
-    this.leftRangeSeconds = this.strip.totalLeds - (this.endTop + 1);
-    this.rightRangeSeconds = this.startTop - 1;
+    this.startFirstDigit = this.strip.endTop - 1;
+    this.startSecondDigit = this.strip.endTop - 4;
+    this.startMinutes = this.strip.startTop + 59;
+    this.leftRangeSeconds = this.strip.totalLeds - (this.strip.endTop + 1);
+    this.rightRangeSeconds = this.strip.startTop - 1;
     this.seperators = [
-      this.endTop,        //begin hour
-      (this.endTop - 3),  //middle between digits
-      (this.endTop - 14),  //end hour
-      this.startTop,       //60 minutes
-      (this.startTop + 10),  //50 minutes
-      (this.startTop + 20),  //40 minutes
-      (this.startTop + 30),  //30 minutes
-      (this.startTop + 40),  //20 minutes
-      (this.startTop + 50), //10 minutes
-      (this.startTop + 60)  //0 minutes
+      this.strip.endTop,        //begin hour
+      (this.strip.endTop - 3),  //middle between digits
+      (this.strip.endTop - 14),  //end hour
+      this.strip.startTop,       //60 minutes
+      (this.strip.startTop + 10),  //50 minutes
+      (this.strip.startTop + 20),  //40 minutes
+      (this.strip.startTop + 30),  //30 minutes
+      (this.strip.startTop + 40),  //20 minutes
+      (this.strip.startTop + 50), //10 minutes
+      (this.strip.startTop + 60)  //0 minutes
     ];
+    this.seperatorOverwrite = null;
 
     //colors
     this.seperatorColor = 0x0B7A0F;
@@ -40,9 +38,15 @@ class Clock{
     this.hourColor = 0xCACACA;
     this.minuteColor = 0xCACACA;
 
+    //for second Drop
+    this.secondsDropOn = true;
+    this.secondsDroping = false;
+    this.secPos = 100;
+
   }//constructor
 
   update(delta){
+    //calculate in-between seconds
     this.second = this.second + delta;
     if(this.second >= 1){
       // console.log(this.second);
@@ -55,6 +59,11 @@ class Clock{
     }
 
     this.updateTime();
+
+    //check if minute falls on a seperator
+    if((this.minutes % 10) == 0){
+      this.seperatorOverwrite = this.startMinutes - (this.minutes - 1);
+    } else this.seperatorOverwrite = null;
 
     //draw time pixels
     // console.log("draw first digit");
@@ -84,15 +93,39 @@ class Clock{
       this.strip.pixelData[seperator] = this.seperatorColor;
     }.bind(this));
 
-    //draw seconds
-    if(this.second <= 0.5){
-      let leftOffset = this.mapRange(this.seconds, 0, 59, 0, this.leftRangeSeconds);
-      let leftIndex = this.strip.totalLeds - leftOffset;
-      let rightOffset = this.mapRange(this.seconds, 0, 59, 0, this.rightRangeSeconds);
-      this.strip.pixelData[leftIndex] = this.blinkingColor;
-      this.strip.pixelData[rightOffset] = this.blinkingColor;
+    //code to draw if minute falls on a seperator
+    if(this.seperatorOverwrite != null){
+      if(this.second <= 0.5){
+        this.strip.pixelData[this.seperatorOverwrite] = this.seperatorColor;
+      } else this.strip.pixelData[this.seperatorOverwrite] = 0;
     }
 
+    //draw seconds
+    if(this.secondsDropOn && this.secondsDroping){
+      // console.log(this.secPos);
+      let leftSecPos = Math.round(this.mapRange(this.secPos, 0, 100, 0, this.leftRangeSeconds));
+      let leftIndex = this.strip.totalLeds - leftSecPos;
+      let rightSecPos = Math.round(this.mapRange(this.secPos, 0, 100, 0, this.rightRangeSeconds));
+      // console.log(leftIndex, rightSecPos);
+      this.strip.pixelData[leftIndex - 1] = this.blinkingColor;
+      this.strip.pixelData[leftIndex] = this.blinkingColor;
+      this.strip.pixelData[rightSecPos + 1] = this.blinkingColor;
+      this.strip.pixelData[rightSecPos] = this.blinkingColor;
+      this.secPos = this.secPos - 1;
+      if(this.secPos <= 0) this.secondsDroping = false;
+    }else{
+      if(this.second <= 0.5){
+        let leftOffset = Math.round(this.mapRange(this.seconds, 0, 59, 0, this.leftRangeSeconds));
+        let leftIndex = this.strip.totalLeds - leftOffset;
+        let rightOffset = Math.round(this.mapRange(this.seconds, 0, 59, 0, this.rightRangeSeconds));
+        this.strip.pixelData[leftIndex] = this.blinkingColor;
+        this.strip.pixelData[rightOffset] = this.blinkingColor;
+      }
+    }
+    if(this.secondsDropOn && this.secondsDroping == false && this.seconds >= 59){
+      this.secondsDroping = true;
+      this.secPos = 100;
+    }
 
   }//update
 
@@ -103,7 +136,10 @@ class Clock{
     this.firstDigit = Math.floor(this.hours / 10);
     this.secondDigit = this.hours % 10;
     this.minutes = this.time.getMinutes();
+    // this.minutes = 30;
+    // let lastSecond = this.seconds;
     this.seconds = this.time.getSeconds();
+    // if(lastSecond != this.seconds) console.log(this.firstDigit, this.secondDigit, this.minutes, this.seconds);
   }
 
   mapRange(value, low1, high1, low2, high2) {

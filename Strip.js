@@ -10,6 +10,10 @@ class Strip
     this.isRunningOnPi = isRunningOnPi;
     this.strip = null;
 
+    this.startTop = 60;
+    this.endTop = 157;
+    this.toplength = this.endTop - this.startTop;
+
     //settings for states
     let STATESETTINGS = require("./states/stateSettings.js");
     this.stateSettings = new STATESETTINGS();
@@ -107,6 +111,18 @@ class Strip
 
   rgb2Int(r, g, b) {
     return ((r & 0xff) << 16) + ((g & 0xff) << 8) + (b & 0xff);
+  }
+
+  int2Rgb(int){
+    var red = int >> 16;
+    var green = int - (red << 16) >> 8;
+    var blue = int - (red << 16) - (green << 8);
+
+    return {
+      red: red,
+      green: green,
+      blue: blue
+    }
   }
 
   reset(){
