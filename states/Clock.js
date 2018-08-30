@@ -62,7 +62,7 @@ class Clock{
 
     //check if minute falls on a seperator
     if((this.minutes % 10) == 0){
-      this.seperatorOverwrite = this.startFirstDigit + this.minutes;
+      this.seperatorOverwrite = this.startMinutes - (this.minutes - 1);
     } else this.seperatorOverwrite = null;
 
     //draw time pixels
@@ -95,36 +95,34 @@ class Clock{
 
     //code to draw if minute falls on a seperator
     if(this.seperatorOverwrite != null){
-      let sepColorRGB = this.strip.int2Rgb(this.seperatorColor);
-      let minColorRGB = this.strip.int2Rgb(this.minuteColor);
-      let newColor = {
-        red: Math.abs(sepColorRGB.red - minColorRGB.red),
-        green: Math.abs(sepColorRGB.green - minColorRGB.green),
-        blue: Math.abs(sepColorRGB.blue - minColorRGB.blue)
-      }
-
-      this.strip.pixelData[this.seperatorOverwrite] = this.strip.rgb2Int(newColor.red, newColor.green, newColor.blue);
+      if(this.second <= 0.5){
+        this.strip.pixelData[this.seperatorOverwrite] = this.seperatorColor;
+      } else this.strip.pixelData[this.seperatorOverwrite] = 0;
     }
 
     //draw seconds
     if(this.secondsDropOn && this.secondsDroping){
-      let leftSecPos = this.mapRange(this.secPos, 0, 100, 0, this.leftRangeSeconds);
+      // console.log(this.secPos);
+      let leftSecPos = Math.round(this.mapRange(this.secPos, 0, 100, 0, this.leftRangeSeconds));
       let leftIndex = this.strip.totalLeds - leftSecPos;
-      let rightSecPos = this.mapRange(this.secPos, 0, 100, 0, this.rightRangeSeconds);
+      let rightSecPos = Math.round(this.mapRange(this.secPos, 0, 100, 0, this.rightRangeSeconds));
+      console.log(leftIndex, rightSecPos);
+      this.strip.pixelData[leftIndex - 1] = this.blinkingColor;
       this.strip.pixelData[leftIndex] = this.blinkingColor;
+      this.strip.pixelData[rightSecPos + 1] = this.blinkingColor;
       this.strip.pixelData[rightSecPos] = this.blinkingColor;
-      this.secPos--;
+      this.secPos = this.secPos - 1;
       if(this.secPos <= 0) this.secondsDroping = false;
     }else{
       if(this.second <= 0.5){
-        let leftOffset = this.mapRange(this.seconds, 0, 59, 0, this.leftRangeSeconds);
+        let leftOffset = Math.round(this.mapRange(this.seconds, 0, 59, 0, this.leftRangeSeconds));
         let leftIndex = this.strip.totalLeds - leftOffset;
-        let rightOffset = this.mapRange(this.seconds, 0, 59, 0, this.rightRangeSeconds);
+        let rightOffset = Math.round(this.mapRange(this.seconds, 0, 59, 0, this.rightRangeSeconds));
         this.strip.pixelData[leftIndex] = this.blinkingColor;
         this.strip.pixelData[rightOffset] = this.blinkingColor;
       }
     }
-    if(this.secondsDropOn && this.seconds >= 59){
+    if(this.secondsDropOn && this.secondsDroping == false && this.seconds >= 59){
       this.secondsDroping = true;
       this.secPos = 100;
     }
@@ -138,6 +136,7 @@ class Clock{
     this.firstDigit = Math.floor(this.hours / 10);
     this.secondDigit = this.hours % 10;
     this.minutes = this.time.getMinutes();
+    // this.minutes = 30;
     let lastSecond = this.seconds;
     this.seconds = this.time.getSeconds();
     if(lastSecond != this.seconds) console.log(this.firstDigit, this.secondDigit, this.minutes, this.seconds);
