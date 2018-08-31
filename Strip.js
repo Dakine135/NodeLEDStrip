@@ -136,7 +136,10 @@ class Strip
   package(){
     let tempPackage = {
       settings: this.stateSettings.package(),
-      stateName: this.stateName
+      stateName: this.stateName,
+      totalLeds: this.totalLeds,
+      startTop: this.startTop,
+      endTop: this.endTop
     }
     return tempPackage;
   }
