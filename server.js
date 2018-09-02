@@ -47,6 +47,9 @@ io.on('connect', function(socket){
         case 'pulse':
           strip.sendPulse(data.pulse);
           break;
+        case 'draw':
+          strip.setColor(data.draw.num, data.draw.color);
+          break;
         default:
          console.log('unknown event:',data);
       }

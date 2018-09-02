@@ -133,6 +133,13 @@ class Strip
     if(this.isRunningOnPi) this.strip.setBrightness(brightness);
   }
 
+  setColor(num, color){
+    console.log("setColor", num, color);
+    if (typeof color == "string") color = parseInt(color.slice(1), 16);
+    console.log(color);
+    this.pixelData[num] = color;
+  }
+
   package(){
     let tempPackage = {
       settings: this.stateSettings.package(),
