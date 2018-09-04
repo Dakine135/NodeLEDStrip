@@ -143,10 +143,13 @@ class Strip
   package(){
     let tempPackage = {
       settings: this.stateSettings.package(),
-      stateName: this.stateName,
-      totalLeds: this.totalLeds,
-      startTop: this.startTop,
-      endTop: this.endTop
+      stateName: this.stateName
+    }
+    if(this.stateName == "draw"){
+      tempPackage["totalLeds"] = this.totalLeds;
+      tempPackage["startTop"] = this.startTop;
+      tempPackage["endTop"] = this.endTop;
+      tempPackage["pixelData"] = this.pixelData;
     }
     return tempPackage;
   }

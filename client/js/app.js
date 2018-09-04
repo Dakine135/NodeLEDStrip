@@ -44,6 +44,7 @@ var mainApp = new Vue({
       currentState: 'off',
       speed: 10,
       colors: [],
+      pixelData: [],
       // Framework7 parameters here
       f7params: {
         root: '#app', // App root element
@@ -63,16 +64,39 @@ var mainApp = new Vue({
       }
     }
   },
+  methods: {
+    int2Rgb: function(int){
+      var red = int >> 16;
+      var green = int - (red << 16) >> 8;
+      var blue = int - (red << 16) - (green << 8);
+
+      return {
+        red: red,
+        green: green,
+        blue: blue
+      }
+    }
+  },
+  watch: {
+    pixelData: {
+      handler: function(val, oldVal){
+        console.log("parent watcher");
+        this.$emit("pixelDataChange", this.pixelData);
+      }
+    }
+  }
 }); // end vue app
 
 socket.emit('event', {state: 'draw'});
 
 socket.on('clientUpdate', function(data){
-  console.log("clientUpdate: ", data);
-  mainApp.currentState = data.stateName;
-  mainApp.speed = data.settings.speed;
-  mainApp.colors = data.settings.colors;
-  mainApp.totalLeds = data.totalLeds;
-  mainApp.startTop = data.startTop;
-  mainApp.endTop = data.endTop;
+  // console.log("clientUpdate: ", data);
+  if(data.stateName) mainApp.currentState = data.stateName;
+  if(data.settings && data.settings.speed) mainApp.speed = data.settings.speed;
+  if(data.settings  && data.settings.colors) mainApp.colors = data.settings.colors;
+  if(data.totalLeds) mainApp.totalLeds = data.totalLeds;
+  if(data.startTop) mainApp.startTop = data.startTop;
+  if(data.endTop) mainApp.endTop = data.endTop;
+  if(data.pixelData) mainApp.pixelData = data.pixelData;
+  // console.log("test: ", mainApp.pixelData);
 });

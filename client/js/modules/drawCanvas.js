@@ -10,21 +10,17 @@ class Box{
     this.leds = leds;
     this.render = render;
     this.selected = false;
+    this.gradient = null;
   }
 
   draw(){
+    this.render.save();
     this.render.beginPath();
     if(this.selected){
       this.render.lineWidth="2";
       this.render.strokeStyle="yellow";
       this.leds.forEach((led)=>{
-        this.render.fillStyle = led.color;
-        this.render.fillRect(led.x, led.y, led.size, led.size);
-        this.render.fillStyle = "yellow";
-        this.render.strokeRect(led.x, led.y, led.size, led.size);
-        this.render.font = "30px Arial";
-        this.render.fillStyle = "white";
-        this.render.fillText(led.num,led.x,(led.y + (led.size/2)));
+        led.draw(this.render);
       });
       // console.log(this.leds);
     } else {
@@ -32,8 +28,42 @@ class Box{
       this.render.strokeStyle="green";
     }
 
-    this.render.rect(this.x, this.y, this.size, this.size);
-    this.render.stroke();
+    // Create gradient
+    let numOfLeds = this.leds.length;
+    let increment = 1 / numOfLeds;
+
+    switch(this.loc){
+      case "Left":
+        this.gradient=this.render.createLinearGradient(
+          this.x, this.y,
+          this.x + this.size, this.y
+        );
+        break;
+      case "Top":
+        this.gradient=this.render.createLinearGradient(
+          this.x, this.y,
+          this.x, this.y + this.size
+        );
+        break;
+      case "Right":
+        this.gradient=this.render.createLinearGradient(
+          this.x,this.y,
+          this.x + this.size, this.y
+        );
+        break;
+      default:
+        console.log("Error in gradient Switch");
+    }
+
+    for(var i=0; i<numOfLeds; i++){
+      this.gradient.addColorStop(((i*increment) +(i*(increment/numOfLeds))),this.leds[i].color);
+    }
+    this.render.fillStyle = this.gradient;
+
+    this.render.fillRect(this.x, this.y, this.size, this.size);
+    this.render.strokeRect(this.x, this.y, this.size, this.size);
+    this.render.restore();
+    // this.render.stroke();
   }
 
   toggleSelected(){
@@ -72,12 +102,84 @@ class Led{
     } else return null;
   }
 
+  draw(render){
+    render.fillStyle = this.color;
+    render.fillRect(this.x, this.y, this.size, this.size);
+    render.strokeStyle = "yellow";
+    render.strokeRect(this.x, this.y, this.size, this.size);
+    render.save();
+    render.translate(this.x, this.y);
+    render.rotate(Math.PI / 2);
+    render.font = "30px Arial";
+    render.fillStyle = "white";
+    render.textAlign = "center";
+    render.fillText(this.num, (this.size / 2), -(this.size / 2.5));
+    render.restore();
+  }
+
+  changeColor(color){
+    if(this.color != color){
+      this.color = color;
+      socket.emit('event', {draw: {num: this.num, color: this.color}});
+    }
+  }
+
   toString(){
     return "Led"+this.num;
   }
 }//Led class
 
-Vue.component('draw-canvas', {
+class Button{
+  constructor(x, y, size, text, color, render, callBack){
+    this.type = "Button";
+    this.font = "20px Arial";
+    this.margin = 3;
+    this.x = x;
+    this.y = y;
+    this.size = size;
+    this.text = text;
+    this.color = color;
+    this.render = render;
+    this.render.font = this.font;
+    this.width = this.render.measureText(this.text).width;
+    this.callBack = callBack;
+  }
+
+  clicked(x, y){
+    if(x > this.x && x < (this.x + this.size) &&
+       y > this.y && y < (this.y + (this.width + (this.margin * 2)))
+     ){
+      return this;
+    } else return null;
+  }
+
+  toString(){
+    return "Button"+this.x+","+this.y+"\nStatus "+this.status;
+  }
+
+  call(){
+    this.callBack();
+  }
+
+  draw(){
+    this.render.beginPath();
+    this.render.font = this.font;
+    this.render.lineWidth="1";
+    this.render.fillStyle = this.color;
+    this.render.fillRect(this.x, this.y, this.size, this.width + (this.margin * 2));
+    this.render.strokeStyle = "yellow";
+    this.render.strokeRect(this.x, this.y, this.size, this.width + (this.margin * 2));
+    this.render.save();
+    this.render.translate(this.x, this.y);
+    this.render.rotate(Math.PI / 2);
+    this.render.fillStyle = "white";
+    this.render.textAlign = "left";
+    this.render.fillText(this.text, this.margin, -(this.size / 2.5));
+    this.render.restore();
+  }
+}//Button class
+
+var drawComponent = Vue.component('draw-canvas', {
   template: `
     <canvas id="drawCanvas" width="200" height="100" style="border:1px solid #ffffff;">
     </canvas>
@@ -87,7 +189,10 @@ Vue.component('draw-canvas', {
       canvas: null,
       render: null,
       boxes: {},
-      currentSelection: null
+      currentSelection: null,
+      buttons: [],
+      paintSelection: false,
+      pixelData: {}
     }
   },
   mounted(){
@@ -102,6 +207,7 @@ Vue.component('draw-canvas', {
       var rect = this.canvas.getBoundingClientRect(), // abs. size of element
       scaleX = this.canvas.width / rect.width,    // relationship bitmap vs. element for X
       scaleY = this.canvas.height / rect.height;  // relationship bitmap vs. element for Y
+      console.log("touchstart:",e.touches.length);
 
       let touchPos = {
         x: (e.touches[0].pageX - rect.left) * scaleX,
@@ -114,24 +220,19 @@ Vue.component('draw-canvas', {
       this.render.rect(touchPos.x, touchPos.y, 2, 2);
       this.render.stroke();
 
-      let clickedBox = this.getClicked(touchPos.x, touchPos.y);
-
-      if(clickedBox){
-        console.log(clickedBox.toString());
-        this.handleClicked(clickedBox);
-       }
+      this.handleClicked("start", touchPos.x, touchPos.y);
     }.bind(this), false);
 
     //create the boxes
-    let margin = 5;
+    let margin = 10;
     let numInSection = 6;
-    let sectionSize = 70;
+    let sectionSize = 60;
     var indexId = 0;
 
     let numTop = this.$root.endTop - this.$root.startTop;
-    console.log(numTop);
+    // console.log(numTop);
     let topSecionsCount = Math.ceil((numTop) / numInSection);
-    console.log(topSecionsCount);
+    // console.log(topSecionsCount);
     let topSize = Math.floor((this.canvas.height - (margin)) / topSecionsCount);
     for(var i=0; i<topSecionsCount; i++){
       let tempId = indexId;
@@ -164,7 +265,7 @@ Vue.component('draw-canvas', {
     }
 
     let numLeft = this.$root.totalLeds - this.$root.endTop;
-    console.log(numLeft);
+    // console.log(numLeft);
     let leftSecionsCount = Math.ceil((numLeft) / numInSection);
     let leftSideSize = (this.canvas.width - (3*margin) - topSize) / leftSecionsCount;
     for(var i=0; i<leftSecionsCount; i++){
@@ -196,7 +297,7 @@ Vue.component('draw-canvas', {
     }
 
     let numRight = this.$root.startTop;
-    console.log(numRight);
+    // console.log(numRight);
     let rightSecionsCount = Math.ceil((numRight) / numInSection);
     let rightSideSize = (this.canvas.width - (3*margin) - topSize) / rightSecionsCount;
     for(var i=0; i<rightSecionsCount; i++){
@@ -227,6 +328,29 @@ Vue.component('draw-canvas', {
       this.boxes[tempId] = tempBox;
     }
 
+    //create Button to toggle "paint entire section"
+    let tempColor = "#444444";
+    if(!this.paintSelection) tempColor = "#000000";
+    let buttonToggleSection = new Button(
+      this.canvas.width * 0.1, this.canvas.height * 0.15 ,
+      sectionSize, "Draw Entire Section", tempColor, this.render, ()=>{
+        this.paintSelection = !this.paintSelection;
+        if(!this.paintSelection){
+          buttonToggleSection.color = "#000000";
+        } else {
+          //turn on paint entire section and remove menu
+          buttonToggleSection.color = "#444444";
+          if(this.currentSelection != null){
+            this.currentSelection.selected = false;
+            this.currentSelection = null;
+          }
+        }
+        console.log("Paint Section",this.paintSelection);
+      });
+    this.buttons.push(buttonToggleSection);
+
+    //create button to pick color
+
     //draw all boxes
     this.draw();
 
@@ -242,6 +366,9 @@ Vue.component('draw-canvas', {
         // console.log(box);
         box[1].draw();
       });
+      this.buttons.forEach((button)=>{
+        button.draw();
+      });
     },
     getClicked: function(x, y){
       let boxes = Object.entries(this.boxes);
@@ -256,20 +383,63 @@ Vue.component('draw-canvas', {
           tempClicked = this.currentSelection.leds[i].clicked(x, y);
         };
       }
+      for(var i=0; i< this.buttons.length && tempClicked == null; i++){
+        // console.log(box);
+        tempClicked = this.buttons[i].clicked(x, y);
+      };
+
       return tempClicked;
     },
-    handleClicked: function(clicked){
-      if(clicked.type == "Box"){
-        if(this.currentSelection != null){
-          this.currentSelection.selected = false;
-        }
-        this.currentSelection = clicked;
-        clicked.selected = true;
-      } else if(clicked.type == "Led"){
-        console.log("Clicked: ", clicked);
-        socket.emit('event', {draw: {num: clicked.num, color: clicked.color}});
-      } else console.log("Error in clicked type");
+    handleClicked: function(type, x, y){
+      let clickedBox = this.getClicked(x, y);
+
+      if(clickedBox){
+        // console.log(clickedBox.toString());
+      } else return;
+
+      switch(clickedBox.type){
+        case "Box":
+          if(this.paintSelection){
+            //Paint all LEDS in section
+            clickedBox.leds.forEach((led)=>{
+              led.changeColor("#0000ff");
+            });
+          } else { // paint individual LEDS
+            //if Nothing was selected
+            if(this.currentSelection != null){
+              this.currentSelection.selected = false;
+            }
+            //if you click the same section, close sub menu
+            if(this.currentSelection != null && clickedBox.id == this.currentSelection.id){
+              this.currentSelection = null;
+              clickedBox.selected = false;
+            } else {  //clicked new section
+              this.currentSelection = clickedBox;
+              clickedBox.selected = true;
+            }
+         }
+          break;
+        case "Led":
+          // console.log("Clicked Box: ", clickedBox);
+          clickedBox.changeColor("#0000ff");
+          break;
+        case "Button":
+          clickedBox.call();
+          break;
+        default:
+          console.log("Error in clicked type");
+
+      }
+      // this.callBack();
       this.draw();
-    }//handle Clicked
-  }
+    },//handle Clicked
+    colorLed: function(num, color){
+
+    }
+  },
+  created: function(){
+      this.$root.$on("pixelDataChange", function(pixelData){
+        console.log("child sees pixel data change:",pixelData);
+      });
+    }
 });
