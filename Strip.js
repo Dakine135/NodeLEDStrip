@@ -4,6 +4,7 @@ class Strip
   constructor(isRunningOnPi, NUM_LEDS)
   {
     this.pixelData = new Uint32Array(NUM_LEDS);
+    this.pixelChangesForDraw = [];
     this.totalLeds = NUM_LEDS;
     this.state = null;
     this.stateName = 'off';
@@ -138,9 +139,10 @@ class Strip
     if (typeof color == "string") color = parseInt(color.slice(1), 16);
     console.log(color);
     this.pixelData[num] = color;
+    this.pixelChangesForDraw.push(num);
   }
 
-  package(){
+  package(fullPackage){
     let tempPackage = {
       settings: this.stateSettings.package(),
       stateName: this.stateName
@@ -149,8 +151,17 @@ class Strip
       tempPackage["totalLeds"] = this.totalLeds;
       tempPackage["startTop"] = this.startTop;
       tempPackage["endTop"] = this.endTop;
-      tempPackage["pixelData"] = this.pixelData;
-    }
+      if(fullPackage) tempPackage["pixelData"] = this.pixelData;
+      else {
+        //only send changes
+        tempPackage["pixelData"] = {};
+        this.pixelChangesForDraw.forEach((change)=>{
+          tempPackage["pixelData"][change] = this.pixelData[change];
+        });
+
+        this.pixelChangesForDraw = [];
+      }
+    }//if in draw
     return tempPackage;
   }
 

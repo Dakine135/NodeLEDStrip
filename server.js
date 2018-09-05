@@ -32,7 +32,7 @@ console.log("Node LED Server running on Port", PORT);
 
 io.on('connect', function(socket){
     console.log("Connection ", socket.id);
-    socket.emit("clientUpdate", strip.package());
+    socket.emit("clientUpdate", strip.package(true));
 
     socket.on('event', function(data){
       console.log("Event: ", data);
@@ -53,7 +53,7 @@ io.on('connect', function(socket){
         default:
          console.log('unknown event:',data);
       }
-      io.emit("clientUpdate", strip.package());
+      io.emit("clientUpdate", strip.package(false));
     });
 
     socket.on('tilt', function(data){

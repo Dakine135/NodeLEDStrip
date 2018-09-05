@@ -65,16 +65,19 @@ var mainApp = new Vue({
     }
   },
   methods: {
-    int2Rgb: function(int){
-      var red = int >> 16;
-      var green = int - (red << 16) >> 8;
-      var blue = int - (red << 16) - (green << 8);
+    int2Hex: function(int){
+      console.log(int);
+       var b = (int & 0xFF).toString(16);
+       var g = ((int >> 8) & 0xFF).toString(16);
+       var r = ((int >> 16) & 0xFF).toString(16);
+       if(int <= 65535) r = 0;
+       if(int <= 255) g = 0;
 
-      return {
-        red: red,
-        green: green,
-        blue: blue
-      }
+       r = ('0' + r).slice(-2);
+       g = ('0' + g).slice(-2);
+       b = ('0' + b).slice(-2);
+
+       return "#" + r + g + b;
     }
   },
   watch: {

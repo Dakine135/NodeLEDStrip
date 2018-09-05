@@ -189,6 +189,7 @@ var drawComponent = Vue.component('draw-canvas', {
       canvas: null,
       render: null,
       boxes: {},
+      numInSection: 6,
       currentSelection: null,
       buttons: [],
       paintSelection: false,
@@ -225,13 +226,12 @@ var drawComponent = Vue.component('draw-canvas', {
 
     //create the boxes
     let margin = 10;
-    let numInSection = 6;
     let sectionSize = 60;
     var indexId = 0;
 
     let numTop = this.$root.endTop - this.$root.startTop;
     // console.log(numTop);
-    let topSecionsCount = Math.ceil((numTop) / numInSection);
+    let topSecionsCount = Math.ceil((numTop) / this.numInSection);
     // console.log(topSecionsCount);
     let topSize = Math.floor((this.canvas.height - (margin)) / topSecionsCount);
     for(var i=0; i<topSecionsCount; i++){
@@ -240,12 +240,12 @@ var drawComponent = Vue.component('draw-canvas', {
 
       //create Led sections
       let tempLeds = [];
-      let numOfLeds = numInSection;
-      if(numTop < numInSection) numOfLeds = numTop;
+      let numOfLeds = this.numInSection;
+      if(numTop < this.numInSection) numOfLeds = numTop;
       let startOffset = (numOfLeds * sectionSize) / 2;
-      for(var f=0; f<numInSection && numTop>0; f++){
+      for(var f=0; f<this.numInSection && numTop>0; f++){
         let tempLed = new Led(
-          ((this.$root.endTop - (i*numInSection))-f),
+          ((this.$root.endTop - (i*this.numInSection))-f),
           ((this.canvas.width / 2) - (sectionSize/4)),
           ((this.canvas.height / 2) - (sectionSize/4) + (f*sectionSize) - startOffset),
           sectionSize,
@@ -266,17 +266,17 @@ var drawComponent = Vue.component('draw-canvas', {
 
     let numLeft = this.$root.totalLeds - this.$root.endTop;
     // console.log(numLeft);
-    let leftSecionsCount = Math.ceil((numLeft) / numInSection);
+    let leftSecionsCount = Math.ceil((numLeft) / this.numInSection);
     let leftSideSize = (this.canvas.width - (3*margin) - topSize) / leftSecionsCount;
     for(var i=0; i<leftSecionsCount; i++){
       let tempId = indexId;
       indexId++;
       //create Led sections
       let tempLeds = [];
-      let numOfLeds = numInSection;
-      if(numLeft < numInSection) numOfLeds = numLeft;
+      let numOfLeds = this.numInSection;
+      if(numLeft < this.numInSection) numOfLeds = numLeft;
       let startOffset = (numOfLeds * sectionSize) / 2;
-      for(var f=0; f<numInSection && numLeft>0; f++){
+      for(var f=0; f<this.numInSection && numLeft>0; f++){
         let tempLed = new Led(
           ((this.$root.totalLeds - (i*numOfLeds))-f),
           ((this.canvas.width / 2) - (sectionSize/4)),
@@ -298,17 +298,17 @@ var drawComponent = Vue.component('draw-canvas', {
 
     let numRight = this.$root.startTop;
     // console.log(numRight);
-    let rightSecionsCount = Math.ceil((numRight) / numInSection);
+    let rightSecionsCount = Math.ceil((numRight) / this.numInSection);
     let rightSideSize = (this.canvas.width - (3*margin) - topSize) / rightSecionsCount;
     for(var i=0; i<rightSecionsCount; i++){
       let tempId = indexId;
       indexId++;
       //create Led sections
       let tempLeds = [];
-      let numOfLeds = numInSection;
-      if(numRight < numInSection) numOfLeds = numRight;
+      let numOfLeds = this.numInSection;
+      if(numRight < this.numInSection) numOfLeds = numRight;
       let startOffset = (numOfLeds * sectionSize) / 2;
-      for(var f=0; f<numInSection && numRight>0; f++){
+      for(var f=0; f<this.numInSection && numRight>0; f++){
         let tempLed = new Led(
           ((i*numOfLeds)+f),
           ((this.canvas.width / 2) - (sectionSize/4)),
@@ -394,7 +394,7 @@ var drawComponent = Vue.component('draw-canvas', {
       let clickedBox = this.getClicked(x, y);
 
       if(clickedBox){
-        // console.log(clickedBox.toString());
+        console.log(clickedBox.toString());
       } else return;
 
       switch(clickedBox.type){
@@ -434,12 +434,45 @@ var drawComponent = Vue.component('draw-canvas', {
       this.draw();
     },//handle Clicked
     colorLed: function(num, color){
+      //get led by num
+      let led = null;
+      let boxes = Object.entries(this.boxes);
+      for(var i=0; i< boxes.length && led == null; i++){
+        for(var y=0; y< boxes[i][1].leds.length && led == null; y++){
+          // console.log(boxes[i][1]);
+          if(boxes[i][1].leds[y].num == num) led = boxes[i][1].leds[y];
+        };
+      };
+      if(typeof color == "number"){
+        color = this.$root.int2Hex(color);
+      }
+      console.log("LED to update colorLed", led, color);
+      led.color = color;
+      //TODO make more efficient with some kind of index lookup
+      // if(num < this.$root.startTop){
+      //   //ID 27-36
+      //   // console.log("Right side:", num);
+      // } else if(this.$root.startTop <= num && num <= this.$root.endTop){
+      //   //ID 0-16
+      //   // console.log("Top side:", num);
+      //
+      // } else if(this.$root.endTop < num && num <= this.$root.totalLeds){
+      //   //ID 17-26
+      //   // console.log("Left side:", num);
+      // } else {
+      //   console.log("Num out of bounds in colorLed:", num);
+      // }
 
     }
   },
   created: function(){
       this.$root.$on("pixelDataChange", function(pixelData){
-        console.log("child sees pixel data change:",pixelData);
-      });
+        // console.log("child sees pixel data change:", pixelData);
+        //process pixel data, update canvas
+        Object.entries(pixelData).forEach((pixel)=>{
+          // console.log("Pixel", pixel);
+          this.colorLed(pixel[0], pixel[1]);
+        });
+      }.bind(this));
     }
 });
