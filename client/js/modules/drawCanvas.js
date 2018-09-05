@@ -121,6 +121,7 @@ class Led{
   }
 
   changeColor(color){
+    console.log(color);
     if(this.color != color){
       this.color = color;
       socket.emit('event', {draw: {num: this.num, color: this.color}});
@@ -134,6 +135,7 @@ class Led{
 
 class Button{
   constructor(x, y, size, text, color, render, callBack){
+    console.log("new button ",color);
     this.type = "Button";
     this.font = "20px Arial";
     this.margin = 3;
@@ -195,6 +197,7 @@ var drawComponent = Vue.component('draw-canvas', {
       numInSection: 6,
       currentSelection: null,
       buttons: [],
+      currentColor: "#FFFFFF",
       paintSelection: false,
       pixelData: {},
       rendered: false
@@ -212,7 +215,7 @@ var drawComponent = Vue.component('draw-canvas', {
       var rect = this.canvas.getBoundingClientRect(), // abs. size of element
       scaleX = this.canvas.width / rect.width,    // relationship bitmap vs. element for X
       scaleY = this.canvas.height / rect.height;  // relationship bitmap vs. element for Y
-      console.log("touchstart:",e.touches.length);
+      // console.log("touchstart:",e.touches.length);
 
       let touchPos = {
         x: (e.touches[0].pageX - rect.left) * scaleX,
@@ -232,7 +235,7 @@ var drawComponent = Vue.component('draw-canvas', {
       var rect = this.canvas.getBoundingClientRect(), // abs. size of element
       scaleX = this.canvas.width / rect.width,    // relationship bitmap vs. element for X
       scaleY = this.canvas.height / rect.height;  // relationship bitmap vs. element for Y
-      console.log("touchmove:",e.touches.length);
+      // console.log("touchmove:",e.touches.length);
 
       let touchPos = {
         x: (e.touches[0].pageX - rect.left) * scaleX,
@@ -272,6 +275,8 @@ var drawComponent = Vue.component('draw-canvas', {
       let margin = 10;
       let sectionSize = 60;
       var indexId = 0;
+      let ledStartX = this.canvas.width * 0.65;
+      let ledStartY = this.canvas.height * 0.55;
 
       let numTop = this.$root.endTop - this.$root.startTop;
       // console.log(numTop);
@@ -290,8 +295,8 @@ var drawComponent = Vue.component('draw-canvas', {
         for(var f=0; f<this.numInSection && numTop>0; f++){
           let tempLed = new Led(
             ((this.$root.endTop - (i*this.numInSection))-f),
-            ((this.canvas.width / 2) - (sectionSize/4)),
-            ((this.canvas.height / 2) - (sectionSize/4) + (f*sectionSize) - startOffset),
+            (ledStartX - (sectionSize/4)),
+            (ledStartY - (sectionSize/4) + (f*sectionSize) - startOffset),
             sectionSize,
             "#000000");
           tempLeds.push(tempLed);
@@ -323,8 +328,8 @@ var drawComponent = Vue.component('draw-canvas', {
         for(var f=0; f<this.numInSection && numLeft>0; f++){
           let tempLed = new Led(
             ((this.$root.totalLeds - (i*numOfLeds))-f),
-            ((this.canvas.width / 2) - (sectionSize/4)),
-            ((this.canvas.height / 2) - (sectionSize/4) + (f*sectionSize) - startOffset),
+            (ledStartX - (sectionSize/4)),
+            (ledStartY - (sectionSize/4) + (f*sectionSize) - startOffset),
             sectionSize,
             "#000000");
           tempLeds.push(tempLed);
@@ -355,8 +360,8 @@ var drawComponent = Vue.component('draw-canvas', {
         for(var f=0; f<this.numInSection && numRight>0; f++){
           let tempLed = new Led(
             ((i*numOfLeds)+f),
-            ((this.canvas.width / 2) - (sectionSize/4)),
-            ((this.canvas.height / 2) - (sectionSize/4) + (f*sectionSize) - startOffset),
+            (ledStartX - (sectionSize/4)),
+            (ledStartY - (sectionSize/4) + (f*sectionSize) - startOffset),
             sectionSize,
             "#000000");
           tempLeds.push(tempLed);
@@ -394,6 +399,29 @@ var drawComponent = Vue.component('draw-canvas', {
       this.buttons.push(buttonToggleSection);
 
       //create button to pick color
+      let colors = ["#000000","#FFFFFF","#0000FF","#FF0000",
+                    "#045900","#42f1f4","#FF00FF","#eeff00"];
+      let tempColorIndex = 0;
+      let spacingV = 50;
+      let spacingH = 65;
+      for(var j=0; j<4; j++){
+        for(var k=0; k<2; k++){
+          console.log("in loop",colors[tempColorIndex]);
+
+          //x, y, size, text, color, render, callBack
+          let tempColorButton = new Button(
+            (this.canvas.width * 0.1) + (spacingH*k),
+            (this.canvas.height * 0.5) + (spacingV*j),
+            sectionSize, "       ", colors[tempColorIndex], this.render, ()=>{
+              console.log(tempColorButton.color);
+              this.currentColor = tempColorButton.color;
+            });
+          this.buttons.push(tempColorButton);
+
+          tempColorIndex++;
+        }
+      }
+
 
       //update current pixels at load for new cleints or refresh
       Object.entries(this.$root.pixelData).forEach((pixel)=>{
@@ -444,7 +472,7 @@ var drawComponent = Vue.component('draw-canvas', {
           if(this.paintSelection){
             //Paint all LEDS in section
             clickedBox.leds.forEach((led)=>{
-              led.changeColor("#0000ff");
+              led.changeColor(this.currentColor);
             });
           } else { // paint individual LEDS
             //if Nothing was selected
@@ -463,7 +491,7 @@ var drawComponent = Vue.component('draw-canvas', {
           break;
         case "Led":
           // console.log("Clicked Box: ", clickedBox);
-          clickedBox.changeColor("#0000ff");
+          clickedBox.changeColor(this.currentColor);
           break;
         case "Button":
           clickedBox.call();
