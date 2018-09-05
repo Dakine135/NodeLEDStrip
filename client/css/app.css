@@ -21,7 +21,7 @@ canvas {
   width: 100%;
 }
 
-/* body {
-  background-color: #2469d8;
-  background: #687891;
-} */
+html, body{
+  overscroll-behavior: none;
+  overscroll-behavior-y: none;
+}

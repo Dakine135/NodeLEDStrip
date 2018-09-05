@@ -8,6 +8,15 @@ function componentToHex(c) {
 // Init F7 Vue Plugin
 Framework7.use(Framework7Vue);
 
+Vue.component('color-picker-popup', {
+  template: '#color-popup-template',
+  data: function(){
+    return {
+      actionGridOpened: true
+    };
+  }
+});
+
 // Init Page Components
 Vue.component('page-about', {
   template: '#page-about'
@@ -66,7 +75,7 @@ var mainApp = new Vue({
   },
   methods: {
     int2Hex: function(int){
-      console.log(int);
+      // console.log(int);
        var b = (int & 0xFF).toString(16);
        var g = ((int >> 8) & 0xFF).toString(16);
        var r = ((int >> 16) & 0xFF).toString(16);
@@ -79,18 +88,10 @@ var mainApp = new Vue({
 
        return "#" + r + g + b;
     }
-  },
-  watch: {
-    pixelData: {
-      handler: function(val, oldVal){
-        console.log("parent watcher");
-        this.$emit("pixelDataChange", this.pixelData);
-      }
-    }
   }
 }); // end vue app
 
-socket.emit('event', {state: 'draw'});
+// socket.emit('event', {state: 'draw'});
 
 socket.on('clientUpdate', function(data){
   // console.log("clientUpdate: ", data);
@@ -100,6 +101,13 @@ socket.on('clientUpdate', function(data){
   if(data.totalLeds) mainApp.totalLeds = data.totalLeds;
   if(data.startTop) mainApp.startTop = data.startTop;
   if(data.endTop) mainApp.endTop = data.endTop;
-  if(data.pixelData) mainApp.pixelData = data.pixelData;
+  if(data.pixelData){
+    Object.entries(data.pixelData).forEach((pixel)=>{
+      // console.log(pixel);
+      mainApp.pixelData[pixel[0]] = pixel[1];
+    });
+     // console.log("Parent",mainApp.pixelData);
+     mainApp.$emit("pixelDataChange", data.pixelData);
+   }
   // console.log("test: ", mainApp.pixelData);
 });

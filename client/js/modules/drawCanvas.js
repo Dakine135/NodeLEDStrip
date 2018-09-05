@@ -112,8 +112,11 @@ class Led{
     render.rotate(Math.PI / 2);
     render.font = "30px Arial";
     render.fillStyle = "white";
+    render.lineWidth=1;
+    render.strokeStyle = "black";
     render.textAlign = "center";
     render.fillText(this.num, (this.size / 2), -(this.size / 2.5));
+    render.strokeText(this.num, (this.size / 2), -(this.size / 2.5));
     render.restore();
   }
 
@@ -193,7 +196,8 @@ var drawComponent = Vue.component('draw-canvas', {
       currentSelection: null,
       buttons: [],
       paintSelection: false,
-      pixelData: {}
+      pixelData: {},
+      rendered: false
     }
   },
   mounted(){
@@ -224,132 +228,28 @@ var drawComponent = Vue.component('draw-canvas', {
       this.handleClicked("start", touchPos.x, touchPos.y);
     }.bind(this), false);
 
-    //create the boxes
-    let margin = 10;
-    let sectionSize = 60;
-    var indexId = 0;
+    this.canvas.addEventListener('touchmove', function(e) {
+      var rect = this.canvas.getBoundingClientRect(), // abs. size of element
+      scaleX = this.canvas.width / rect.width,    // relationship bitmap vs. element for X
+      scaleY = this.canvas.height / rect.height;  // relationship bitmap vs. element for Y
+      console.log("touchmove:",e.touches.length);
 
-    let numTop = this.$root.endTop - this.$root.startTop;
-    // console.log(numTop);
-    let topSecionsCount = Math.ceil((numTop) / this.numInSection);
-    // console.log(topSecionsCount);
-    let topSize = Math.floor((this.canvas.height - (margin)) / topSecionsCount);
-    for(var i=0; i<topSecionsCount; i++){
-      let tempId = indexId;
-      indexId++;
+      let touchPos = {
+        x: (e.touches[0].pageX - rect.left) * scaleX,
+        y: (e.touches[0].pageY - rect.top) * scaleY
+      };
+      // console.log(touchPos);
+      this.render.lineWidth="1";
+      this.render.strokeStyle="yellow";
+      this.render.beginPath();
+      this.render.rect(touchPos.x, touchPos.y, 2, 2);
+      this.render.stroke();
 
-      //create Led sections
-      let tempLeds = [];
-      let numOfLeds = this.numInSection;
-      if(numTop < this.numInSection) numOfLeds = numTop;
-      let startOffset = (numOfLeds * sectionSize) / 2;
-      for(var f=0; f<this.numInSection && numTop>0; f++){
-        let tempLed = new Led(
-          ((this.$root.endTop - (i*this.numInSection))-f),
-          ((this.canvas.width / 2) - (sectionSize/4)),
-          ((this.canvas.height / 2) - (sectionSize/4) + (f*sectionSize) - startOffset),
-          sectionSize,
-          "#999999");
-        tempLeds.push(tempLed);
-        numTop--;
-      }
+      this.handleClicked("start", touchPos.x, touchPos.y);
+    }.bind(this), false);
 
-      let tempBox = new Box(tempId, "Top", i,
-        (this.canvas.width - topSize - margin),
-        ((margin) + (topSize*i)),
-        topSize,
-        tempLeds,
-        this.render
-      );
-      this.boxes[tempId] = tempBox;
-    }
-
-    let numLeft = this.$root.totalLeds - this.$root.endTop;
-    // console.log(numLeft);
-    let leftSecionsCount = Math.ceil((numLeft) / this.numInSection);
-    let leftSideSize = (this.canvas.width - (3*margin) - topSize) / leftSecionsCount;
-    for(var i=0; i<leftSecionsCount; i++){
-      let tempId = indexId;
-      indexId++;
-      //create Led sections
-      let tempLeds = [];
-      let numOfLeds = this.numInSection;
-      if(numLeft < this.numInSection) numOfLeds = numLeft;
-      let startOffset = (numOfLeds * sectionSize) / 2;
-      for(var f=0; f<this.numInSection && numLeft>0; f++){
-        let tempLed = new Led(
-          ((this.$root.totalLeds - (i*numOfLeds))-f),
-          ((this.canvas.width / 2) - (sectionSize/4)),
-          ((this.canvas.height / 2) - (sectionSize/4) + (f*sectionSize) - startOffset),
-          sectionSize,
-          "#999999");
-        tempLeds.push(tempLed);
-        numLeft--;
-      }
-      let tempBox = new Box(tempId, "Left", i,
-        (margin+(i*leftSideSize)),
-        margin,
-        leftSideSize,
-        tempLeds,
-        this.render
-      );
-      this.boxes[tempId] = tempBox;
-    }
-
-    let numRight = this.$root.startTop;
-    // console.log(numRight);
-    let rightSecionsCount = Math.ceil((numRight) / this.numInSection);
-    let rightSideSize = (this.canvas.width - (3*margin) - topSize) / rightSecionsCount;
-    for(var i=0; i<rightSecionsCount; i++){
-      let tempId = indexId;
-      indexId++;
-      //create Led sections
-      let tempLeds = [];
-      let numOfLeds = this.numInSection;
-      if(numRight < this.numInSection) numOfLeds = numRight;
-      let startOffset = (numOfLeds * sectionSize) / 2;
-      for(var f=0; f<this.numInSection && numRight>0; f++){
-        let tempLed = new Led(
-          ((i*numOfLeds)+f),
-          ((this.canvas.width / 2) - (sectionSize/4)),
-          ((this.canvas.height / 2) - (sectionSize/4) + (f*sectionSize) - startOffset),
-          sectionSize,
-          "#999999");
-        tempLeds.push(tempLed);
-        numRight--;
-      }
-      let tempBox = new Box(tempId, "Right", i,
-        (margin+(i*rightSideSize)),
-        (this.canvas.height - margin - rightSideSize),
-        rightSideSize,
-        tempLeds,
-        this.render
-      );
-      this.boxes[tempId] = tempBox;
-    }
-
-    //create Button to toggle "paint entire section"
-    let tempColor = "#444444";
-    if(!this.paintSelection) tempColor = "#000000";
-    let buttonToggleSection = new Button(
-      this.canvas.width * 0.1, this.canvas.height * 0.15 ,
-      sectionSize, "Draw Entire Section", tempColor, this.render, ()=>{
-        this.paintSelection = !this.paintSelection;
-        if(!this.paintSelection){
-          buttonToggleSection.color = "#000000";
-        } else {
-          //turn on paint entire section and remove menu
-          buttonToggleSection.color = "#444444";
-          if(this.currentSelection != null){
-            this.currentSelection.selected = false;
-            this.currentSelection = null;
-          }
-        }
-        console.log("Paint Section",this.paintSelection);
-      });
-    this.buttons.push(buttonToggleSection);
-
-    //create button to pick color
+    //create all objects
+    this.initialize();
 
     //draw all boxes
     this.draw();
@@ -359,6 +259,148 @@ var drawComponent = Vue.component('draw-canvas', {
     // console.log(this.$root);
   },
   methods: {
+    initialize: function(){
+
+      if(this.$root.totalLeds == null){
+        console.log("data Not ready");
+        this.rendered = false;
+        return
+      }
+      this.rendered = true;
+
+      //create the boxes
+      let margin = 10;
+      let sectionSize = 60;
+      var indexId = 0;
+
+      let numTop = this.$root.endTop - this.$root.startTop;
+      // console.log(numTop);
+      let topSecionsCount = Math.ceil((numTop) / this.numInSection);
+      // console.log(topSecionsCount);
+      let topSize = Math.floor((this.canvas.height - (margin)) / topSecionsCount);
+      for(var i=0; i<topSecionsCount; i++){
+        let tempId = indexId;
+        indexId++;
+
+        //create Led sections
+        let tempLeds = [];
+        let numOfLeds = this.numInSection;
+        if(numTop < this.numInSection) numOfLeds = numTop;
+        let startOffset = (numOfLeds * sectionSize) / 2;
+        for(var f=0; f<this.numInSection && numTop>0; f++){
+          let tempLed = new Led(
+            ((this.$root.endTop - (i*this.numInSection))-f),
+            ((this.canvas.width / 2) - (sectionSize/4)),
+            ((this.canvas.height / 2) - (sectionSize/4) + (f*sectionSize) - startOffset),
+            sectionSize,
+            "#000000");
+          tempLeds.push(tempLed);
+          numTop--;
+        }
+
+        let tempBox = new Box(tempId, "Top", i,
+          (this.canvas.width - topSize - margin),
+          ((margin) + (topSize*i)),
+          topSize,
+          tempLeds,
+          this.render
+        );
+        this.boxes[tempId] = tempBox;
+      }
+
+      let numLeft = this.$root.totalLeds - this.$root.endTop;
+      // console.log(numLeft);
+      let leftSecionsCount = Math.ceil((numLeft) / this.numInSection);
+      let leftSideSize = (this.canvas.width - (3*margin) - topSize) / leftSecionsCount;
+      for(var i=0; i<leftSecionsCount; i++){
+        let tempId = indexId;
+        indexId++;
+        //create Led sections
+        let tempLeds = [];
+        let numOfLeds = this.numInSection;
+        if(numLeft < this.numInSection) numOfLeds = numLeft;
+        let startOffset = (numOfLeds * sectionSize) / 2;
+        for(var f=0; f<this.numInSection && numLeft>0; f++){
+          let tempLed = new Led(
+            ((this.$root.totalLeds - (i*numOfLeds))-f),
+            ((this.canvas.width / 2) - (sectionSize/4)),
+            ((this.canvas.height / 2) - (sectionSize/4) + (f*sectionSize) - startOffset),
+            sectionSize,
+            "#000000");
+          tempLeds.push(tempLed);
+          numLeft--;
+        }
+        let tempBox = new Box(tempId, "Left", i,
+          (margin+(i*leftSideSize)),
+          margin,
+          leftSideSize,
+          tempLeds,
+          this.render
+        );
+        this.boxes[tempId] = tempBox;
+      }
+
+      let numRight = this.$root.startTop;
+      // console.log(numRight);
+      let rightSecionsCount = Math.ceil((numRight) / this.numInSection);
+      let rightSideSize = (this.canvas.width - (3*margin) - topSize) / rightSecionsCount;
+      for(var i=0; i<rightSecionsCount; i++){
+        let tempId = indexId;
+        indexId++;
+        //create Led sections
+        let tempLeds = [];
+        let numOfLeds = this.numInSection;
+        if(numRight < this.numInSection) numOfLeds = numRight;
+        let startOffset = (numOfLeds * sectionSize) / 2;
+        for(var f=0; f<this.numInSection && numRight>0; f++){
+          let tempLed = new Led(
+            ((i*numOfLeds)+f),
+            ((this.canvas.width / 2) - (sectionSize/4)),
+            ((this.canvas.height / 2) - (sectionSize/4) + (f*sectionSize) - startOffset),
+            sectionSize,
+            "#000000");
+          tempLeds.push(tempLed);
+          numRight--;
+        }
+        let tempBox = new Box(tempId, "Right", i,
+          (margin+(i*rightSideSize)),
+          (this.canvas.height - margin - rightSideSize),
+          rightSideSize,
+          tempLeds,
+          this.render
+        );
+        this.boxes[tempId] = tempBox;
+      }
+
+      //create Button to toggle "paint entire section"
+      let tempColor = "#444444";
+      if(!this.paintSelection) tempColor = "#000000";
+      let buttonToggleSection = new Button(
+        this.canvas.width * 0.1, this.canvas.height * 0.15 ,
+        sectionSize, "Fill Entire Section", tempColor, this.render, ()=>{
+          this.paintSelection = !this.paintSelection;
+          if(!this.paintSelection){
+            buttonToggleSection.color = "#000000";
+          } else {
+            //turn on paint entire section and remove menu
+            buttonToggleSection.color = "#444444";
+            if(this.currentSelection != null){
+              this.currentSelection.selected = false;
+              this.currentSelection = null;
+            }
+          }
+          // console.log("Paint Section",this.paintSelection);
+        });
+      this.buttons.push(buttonToggleSection);
+
+      //create button to pick color
+
+      //update current pixels at load for new cleints or refresh
+      Object.entries(this.$root.pixelData).forEach((pixel)=>{
+        // console.log("Pixel", pixel);
+        this.colorLed(pixel[0], pixel[1]);
+      });
+    },
     draw: function(){
       this.render.fillStyle = "black";
       this.render.fillRect(0, 0, this.canvas.width, this.canvas.height);
@@ -394,7 +436,7 @@ var drawComponent = Vue.component('draw-canvas', {
       let clickedBox = this.getClicked(x, y);
 
       if(clickedBox){
-        console.log(clickedBox.toString());
+        // console.log(clickedBox.toString());
       } else return;
 
       switch(clickedBox.type){
@@ -446,33 +488,23 @@ var drawComponent = Vue.component('draw-canvas', {
       if(typeof color == "number"){
         color = this.$root.int2Hex(color);
       }
-      console.log("LED to update colorLed", led, color);
-      led.color = color;
-      //TODO make more efficient with some kind of index lookup
-      // if(num < this.$root.startTop){
-      //   //ID 27-36
-      //   // console.log("Right side:", num);
-      // } else if(this.$root.startTop <= num && num <= this.$root.endTop){
-      //   //ID 0-16
-      //   // console.log("Top side:", num);
-      //
-      // } else if(this.$root.endTop < num && num <= this.$root.totalLeds){
-      //   //ID 17-26
-      //   // console.log("Left side:", num);
-      // } else {
-      //   console.log("Num out of bounds in colorLed:", num);
-      // }
+      // console.log("LED to update colorLed", led, color);
+      if(led){
+        led.color = color;
+      }
+      this.draw();
 
     }
   },
   created: function(){
       this.$root.$on("pixelDataChange", function(pixelData){
-        // console.log("child sees pixel data change:", pixelData);
+        console.log("child sees pixel data change:", pixelData);
         //process pixel data, update canvas
         Object.entries(pixelData).forEach((pixel)=>{
           // console.log("Pixel", pixel);
           this.colorLed(pixel[0], pixel[1]);
         });
+        if(this.rendered == false) this.initialize();
       }.bind(this));
     }
 });

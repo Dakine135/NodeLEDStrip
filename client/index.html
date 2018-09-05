@@ -80,6 +80,8 @@
 
               <template id="off-settings-template" v-if="currentState == 'off'">
                 <f7-button round outline panel-open="left">Current Mode: Off</f7-button>
+                <f7-button raised href="#" data-popup=".color-popup" class="popup-open">Color Picker</f7-button>
+                <color-picker-popup></color-picker-popup>
                 <f7-list>
                   <f7-list-item link="/about/" title="About"></f7-list-item>
                 </f7-list>
@@ -126,25 +128,30 @@
         </f7-page>
       </f7-view>
 
-      <!-- Popup -->
-      <f7-popup id="popup">
-        <f7-view>
-          <f7-page>
-            <f7-navbar title="Popup">
-              <f7-nav-right>
-                <f7-link popup-close>Close</f7-link>
-              </f7-nav-right>
-            </f7-navbar>
-            <f7-block>
-              Color-Picker
-            </f7-block>
-          </f7-page>
-        </f7-view>
-      </f7-popup>
+
 
 
     </f7-app> <!-- f7 app -->
   </div> <!-- ID vue app -->
+
+  <!-- Grid -->
+  <template id="color-popup-template">
+    <!-- Popup -->
+    <f7-popup id="color-popup">
+      <f7-view>
+        <f7-page>
+          <f7-navbar title="Popup">
+            <f7-nav-right>
+              <f7-link popup-close>Close</f7-link>
+            </f7-nav-right>
+          </f7-navbar>
+          <f7-block>
+            Color-Picker
+          </f7-block>
+        </f7-page>
+      </f7-view>
+    </f7-popup>
+  </template>
 
   <!-- About Page Template -->
   <template id="page-about">

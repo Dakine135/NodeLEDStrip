@@ -36,10 +36,12 @@ io.on('connect', function(socket){
 
     socket.on('event', function(data){
       console.log("Event: ", data);
+      let updateFull = false;
       let key = Object.keys(data)[0];
       switch(key){
         case 'state':
           strip.changeState(data.state);
+          updateFull = true;
           break;
         case 'settings':
           strip.updateSettings(data.settings);
@@ -53,7 +55,7 @@ io.on('connect', function(socket){
         default:
          console.log('unknown event:',data);
       }
-      io.emit("clientUpdate", strip.package(false));
+      io.emit("clientUpdate", strip.package(updateFull));
     });
 
     socket.on('tilt', function(data){
