@@ -26,32 +26,8 @@
   <link rel="stylesheet" href="css/icons.css">
   <link rel="stylesheet" href="css/app.css">
 
-  <style>
-    .garden {
-      position: relative;
-      width : 200px;
-      height: 200px;
-      border: 5px solid #CCC;
-      border-radius: 10px;
-    }
-
-    .ball {
-      position: absolute;
-      top   : 90px;
-      left  : 90px;
-      width : 20px;
-      height: 20px;
-      background: green;
-      border-radius: 100%;
-    }
-
-    canvas {
-      width: 100%;
-    }
-
-  </style>
 </head>
-<body>
+<body class="color-theme-blue theme-dark">
   <script src="/reload/reload.js"></script>
   <div id="app">
     <f7-app :params="f7params">
@@ -71,6 +47,7 @@
                 <mode-switch title="Fade" inital-state-name='fade'></mode-switch>
                 <mode-switch title="Pulse" inital-state-name='pulse'></mode-switch>
                 <mode-switch title="Tilt" inital-state-name='tilt'></mode-switch>
+                <mode-switch title="Draw" inital-state-name='draw'></mode-switch>
                 <!-- <mode-switch title="Pong" inital-state-name='pong'></mode-switch> -->
               </f7-list>
             </f7-block>
@@ -103,6 +80,8 @@
 
               <template id="off-settings-template" v-if="currentState == 'off'">
                 <f7-button round outline panel-open="left">Current Mode: Off</f7-button>
+                <!-- <f7-button raised href="#" data-popup=".color-popup" class="popup-open">Color Picker</f7-button>
+                <color-picker-popup></color-picker-popup> -->
                 <f7-list>
                   <f7-list-item link="/about/" title="About"></f7-list-item>
                 </f7-list>
@@ -139,31 +118,40 @@
                 <f7-button round outline panel-open="left">Current Mode: Clock</f7-button>
               </template>
 
+              <template id="draw-settings-template" v-if="currentState == 'draw'">
+                <draw-canvas></draw-canvas>
+              </template>
+
           </f7-block>
 
 
         </f7-page>
       </f7-view>
 
-      <!-- Popup -->
-      <f7-popup id="popup">
-        <f7-view>
-          <f7-page>
-            <f7-navbar title="Popup">
-              <f7-nav-right>
-                <f7-link popup-close>Close</f7-link>
-              </f7-nav-right>
-            </f7-navbar>
-            <f7-block>
-              Color-Picker
-            </f7-block>
-          </f7-page>
-        </f7-view>
-      </f7-popup>
+
 
 
     </f7-app> <!-- f7 app -->
   </div> <!-- ID vue app -->
+
+  <!-- Grid -->
+  <template id="color-popup-template">
+    <!-- Popup -->
+    <f7-popup id="color-popup">
+      <f7-view>
+        <f7-page>
+          <f7-navbar title="Popup">
+            <f7-nav-right>
+              <f7-link popup-close>Close</f7-link>
+            </f7-nav-right>
+          </f7-navbar>
+          <f7-block>
+            Color-Picker
+          </f7-block>
+        </f7-page>
+      </f7-view>
+    </f7-popup>
+  </template>
 
   <!-- About Page Template -->
   <template id="page-about">
@@ -195,32 +183,6 @@
 
   <template id="speed-changer-template">
     <f7-block>
-      <!-- <f7-row no-gap>
-        <f7-col width="50">
-          <f7-stepper fill small round color="orange"
-            :value="speed"
-            :min="minSpeed"
-            :max="maxSpeed"
-            :autorepeat="true"
-            :input-readonly="true"
-            :decimal-point="2"
-            @stepper:minusclick="addSpeed(-0.01)"
-            @stepper:plusclick="addSpeed(0.01)"
-          ></f7-stepper>
-        </f7-col>
-        <f7-col width="50">
-          <f7-stepper fill small round color="orange"
-            :value="speed"
-            :min="minSpeed"
-            :max="maxSpeed"
-            :autorepeat="true"
-            :input-readonly="true"
-            :decimal-point="2"
-            @stepper:minusclick="addSpeed(-1)"
-            @stepper:plusclick="addSpeed(1)"
-          ></f7-stepper>
-        </f7-col>
-      </f7-row> -->
       <f7-row no-gap>
         <f7-col width="10">
           <f7-icon material="directions_run"></f7-icon>
@@ -439,9 +401,6 @@
   </template>
 
 
-
-
-
   <!-- Cordova -->
   <!--<script src="cordova.js"></script>-->
   <!-- Framework7 library -->
@@ -452,6 +411,13 @@
   <script src="libs/framework7-vue/framework7-vue.min.js"></script>
   <!-- Socket IO client -->
   <script src="/socket.io/socket.io.js"></script>
+  <!-- Vue Module Components -->
+  <script src=js/modules/drawCanvas.js></script>
+  <script src=js/modules/colorPicker.js></script>
+  <script src=js/modules/pongGame.js></script>
+  <script src=js/modules/sendPulse.js></script>
+  <script src=js/modules/speedChanger.js></script>
+  <script src=js/modules/tilt.js></script>
   <!-- Your custom app scripts -->
   <script src="js/app.js"></script>
 </body>

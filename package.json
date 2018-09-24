@@ -25,7 +25,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js --watch client --watch Strip.js --watch server.js --watch states --watch client\\js",
+    "dev": "nodemon server.js --watch server.js  --watch Strip.js --watch states --watch client/index.html --watch client/js/app.js --watch client/js/modules",
     "start": "sudo node server.js"
   },
   "author": "Dustin Welborn",

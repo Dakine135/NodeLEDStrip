@@ -32,14 +32,16 @@ console.log("Node LED Server running on Port", PORT);
 
 io.on('connect', function(socket){
     console.log("Connection ", socket.id);
-    socket.emit("clientUpdate", strip.package());
+    socket.emit("clientUpdate", strip.package(true));
 
     socket.on('event', function(data){
       console.log("Event: ", data);
+      let updateFull = false;
       let key = Object.keys(data)[0];
       switch(key){
         case 'state':
           strip.changeState(data.state);
+          updateFull = true;
           break;
         case 'settings':
           strip.updateSettings(data.settings);
@@ -47,10 +49,13 @@ io.on('connect', function(socket){
         case 'pulse':
           strip.sendPulse(data.pulse);
           break;
+        case 'draw':
+          strip.setColor(data.draw.num, data.draw.color);
+          break;
         default:
          console.log('unknown event:',data);
       }
-      io.emit("clientUpdate", strip.package());
+      io.emit("clientUpdate", strip.package(updateFull));
     });
 
     socket.on('tilt', function(data){
