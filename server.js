@@ -7,7 +7,7 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 const gameloop = require('node-gameloop');
 
-var NUM_LEDS = 217;
+var NUM_LEDS = 434;
 var PORT = 80;
 var STRIP = require("./Strip.js");
 const isPi = require('detect-rpi');

@@ -5,15 +5,27 @@ class Strip
   {
     this.pixelData = new Uint32Array(NUM_LEDS);
     this.pixelChangesForDraw = [];
-    this.totalLeds = NUM_LEDS;
+    this.totalLeds = NUM_LEDS; //434
     this.state = null;
     this.stateName = 'off';
     this.isRunningOnPi = isRunningOnPi;
     this.strip = null;
 
+    //Dinning side, first by index
+    this.start = 0;
+    this.end = 216;
     this.startTop = 60;
     this.endTop = 157;
     this.toplength = this.endTop - this.startTop;
+
+    //Living Room Side, last by index
+    this.start2 = 217;
+    this.end2 = 433
+    this.startTop2 = 277;
+    this.endTop2 = 374;
+    this.toplength2 = this.endTop - this.startTop;
+    //97 length top
+
 
     //settings for states
     let STATESETTINGS = require("./states/stateSettings.js");
