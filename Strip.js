@@ -5,27 +5,33 @@ class Strip
   {
     this.pixelData = new Uint32Array(NUM_LEDS);
     this.pixelChangesForDraw = [];
-    this.totalLeds = NUM_LEDS; //434
+    this.totalLeds = NUM_LEDS; //436
     this.state = null;
     this.stateName = 'off';
     this.isRunningOnPi = isRunningOnPi;
     this.strip = null;
 
     //Dinning side, first by index
-    this.start = 0;
-    this.end = 216;
-    this.startTop = 60;
-    this.endTop = 157;
-    this.toplength = this.endTop - this.startTop;
+    this.dinningSide = {
+      start: 0,
+      startTop: 60,
+      endTop: 157,
+      end: 216
+    }
+    this.dinningSide['toplength'] = this.dinningSide.endTop - this.dinningSide.startTop;
+    this.dinningSide['length'] = this.dinningSide.end - this.dinningSide.start + 1;
+    console.log(this.dinningSide);
 
     //Living Room Side, last by index
-    this.start2 = 217;
-    this.end2 = 433
-    this.startTop2 = 277;
-    this.endTop2 = 374;
-    this.toplength2 = this.endTop - this.startTop;
-    //97 length top
-
+    this.livingSide = {
+      start: 217,
+      startTop: 277,
+      endTop: 374,
+      end: (this.totalLeds - 1)
+    }
+    this.livingSide['toplength'] = this.livingSide.endTop - this.livingSide.startTop;
+    this.livingSide['length'] = this.livingSide.end - this.livingSide.start + 1;
+    console.log(this.livingSide);
 
     //settings for states
     let STATESETTINGS = require("./states/stateSettings.js");
@@ -95,6 +101,7 @@ class Strip
           break;
         case "draw":
           let DRAW = require("./states/Draw.js");
+          this.pixelData = new Uint32Array(this.totalLeds);
           this.state = new DRAW(this);
           this.stateName = 'draw';
           break;
@@ -116,7 +123,7 @@ class Strip
 
   // rainbow-colors, taken from http://goo.gl/Cs3H0v
   colorwheel(pos) {
-    pos = 255 - pos;
+    pos = 255 - Math.floor(pos);
     if (pos < 85) { return this.rgb2Int(255 - pos * 3, 0, pos * 3); }
     else if (pos < 170) { pos -= 85; return this.rgb2Int(0, pos * 3, 255 - pos * 3); }
     else { pos -= 170; return this.rgb2Int(pos * 3, 255 - pos * 3, 0); }
@@ -142,16 +149,98 @@ class Strip
     if(this.isRunningOnPi) this.strip.reset();
   }
 
+  clearPixels(){
+    for (var i=0; i < this.totalLeds; i++){
+        this.pixelData[i] = 0;
+    }
+  }
+
   setBrightness(brightness){
     if(this.isRunningOnPi) this.strip.setBrightness(brightness);
   }
 
   setColor(num, color){
-    console.log("setColor", num, color);
+    // console.log("setColor", num, color);
     if (typeof color == "string") color = parseInt(color.slice(1), 16);
-    console.log(color);
+    // console.log(color);
     this.pixelData[num] = color;
-    this.pixelChangesForDraw.push(num);
+    if(this.stateName == "draw"){
+      this.pixelChangesForDraw.push(num);
+    }
+  }
+
+  /**********************
+  side:
+    dinning or living
+  position:
+    start, startTop, endTop, end
+  offset:
+    Integer positive or negative to offset from position index
+    also could be a fraction for percentage of that section
+  mode:
+    single, mirror, reflect
+  ***********************/
+  drawPixel(side, position, mode, offset, color){
+    //get and check side
+    let sideConfig;
+    if(side === 'dinning') sideConfig = this.dinningSide;
+    else if (side === 'living') sideConfig = this.livingSide;
+    else throw "Bad side given in drawPixel: "+side+" expecting dinning or living";
+
+    //get and check position
+    let intialIndex = sideConfig[position];
+    let index = intialIndex;
+    if(intialIndex == null || intialIndex == undefined) throw "Bad position given in drawPixel: "+position+" expecting start, startTop, endTop, end";
+
+    //calculate pixel index
+    if(offset > 0 && offset < 1) {
+      //does not support negatives
+      //offset is a fration and needs to map range based on position and side
+      //TODO
+    } else {
+      index = Math.round(index + offset);
+    }
+
+    if(mode != 'single'){
+      let otherIndex = this.translatePixelIndex(index, mode);
+      this.setColor(otherIndex, color);
+    }
+    this.setColor(index, color);
+  }
+
+  /**********************
+  Currently assumes you are addressing via the dinning Side and
+  retuning the translation for the Living side
+    index:
+      integer
+    mode:
+      mirror or reflect
+  ***********************/
+  translatePixelIndex(index, mode){
+    //dinning Side count = 217   (0-216)
+    //living Side count =  218   (217-435)
+    //TODO crude, needs to take into account sides and top and inconsitencies in length
+    let translationIndex;
+    if(mode === 'reflect'){
+      translationIndex = this.mapRange(
+        index,
+        this.dinningSide.start,
+        this.dinningSide.end,
+        this.livingSide.start,
+        this.livingSide.end);
+    } else if(mode === 'mirror'){
+      translationIndex = this.mapRange(
+        index,
+        this.dinningSide.start,
+        this.dinningSide.end,
+        this.livingSide.end,
+        this.livingSide.start);
+    } else throw "Bad mode in translatePixelIndex: "+mode+" expecting mirror or reflect";
+    return translationIndex;
+  } // end translatePixelIndex
+
+  mapRange(value, low1, high1, low2, high2) {
+   return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
   }
 
   package(fullPackage){
@@ -161,8 +250,8 @@ class Strip
     }
     if(this.stateName == "draw"){
       tempPackage["totalLeds"] = this.totalLeds;
-      tempPackage["startTop"] = this.startTop;
-      tempPackage["endTop"] = this.endTop;
+      tempPackage["startTop"] = this.dinningSide.startTop;
+      tempPackage["endTop"] = this.dinningSide.endTop;
       if(fullPackage) tempPackage["pixelData"] = this.pixelData;
       else {
         //only send changes

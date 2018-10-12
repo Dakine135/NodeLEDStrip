@@ -7,12 +7,12 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 const gameloop = require('node-gameloop');
 
-var NUM_LEDS = 434;
+var NUM_LEDS = 436;
 var PORT = 80;
 var STRIP = require("./Strip.js");
 const isPi = require('detect-rpi');
 var strip = new STRIP(isPi(), NUM_LEDS);
-strip.changeState('off');
+strip.changeState('rainbow');
 console.log("current State: ", strip.stateName);
 
 // trap the SIGINT and reset before exit
@@ -75,7 +75,7 @@ io.on('connect', function(socket){
 
 // start the loop at 30 fps (1000/30ms per frame) and grab its id
 let frameCount = 0;
-let frameRate = 60; //frames per Second
+let frameRate = 30; //frames per Second
 const id = gameloop.setGameLoop(function(delta) {
     // `delta` is the delta time from the last frame
     // console.log('Frame=%s, Delta=%s', frameCount++, delta);

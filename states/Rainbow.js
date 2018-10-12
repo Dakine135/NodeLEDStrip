@@ -7,9 +7,10 @@ class Rainbow{
 
   update(delta){
     // ---- animation-loop color wheel slow roll
-      for (var i = 0; i < this.strip.totalLeds; i++) {
+      for (var i = 0; i < this.strip.dinningSide.length; i++) {
         let offsetFloor = Math.floor(this.offset);
-        this.strip.pixelData[i] = this.strip.colorwheel((offsetFloor + i) % 256);
+        let color = this.strip.colorwheel((offsetFloor + i) % 256);
+        this.strip.drawPixel('dinning', 'start', 'mirror', i, color);
       }
       this.offset = (this.offset + (this.strip.stateSettings.speed * delta)) % 256;
       //test
