@@ -237,7 +237,7 @@ class Strip
     } else if(mode === 'mirror'){
       if(index >= this.dinningSide.start && index < this.dinningSide.startTop){
         //index is on the right start side of dinning (beggining)
-         let fraction = 1 - (index / ((this.dinningSide.startTop-1) - this.dinningSide.start));
+         let fraction = 1.0 - (index / ((this.dinningSide.startTop-1) - this.dinningSide.start));
          translationIndex = Math.round(this.mapRange(
            fraction, 0, 1,
            this.livingSide.endTop + 1,
@@ -246,7 +246,7 @@ class Strip
 
       } else if(index >= this.dinningSide.startTop && index <= this.dinningSide.endTop){
         //index is on the top side of dinning (middle)
-        let fraction = 1 - (index / (this.dinningSide.endTop - this.dinningSide.startTop));
+        let fraction = 1.0 - (index / (this.dinningSide.endTop - this.dinningSide.startTop));
         translationIndex = Math.round(this.mapRange(
           fraction, 0, 1,
           this.livingSide.startTop,
@@ -254,7 +254,7 @@ class Strip
         ));
       } else if(index > this.dinningSide.endTop && index <= this.dinningSide.end){
         //index is on the left side of dinning (end)
-        let fraction = 1 - (index / (this.dinningSide.end - (this.dinningSide.endTop+1)));
+        let fraction = 1.0 - (index / (this.dinningSide.end - (this.dinningSide.endTop+1)));
         translationIndex = Math.round(this.mapRange(
           fraction, 0, 1,
           this.livingSide.start,
