@@ -16,21 +16,21 @@ class Strip
       start: 0,
       startTop: 60,
       endTop: 157,
-      end: 216
+      end: 217
     }
-    this.dinningSide['toplength'] = this.dinningSide.endTop - this.dinningSide.startTop;
-    this.dinningSide['length'] = this.dinningSide.end - this.dinningSide.start + 1;
+    //this.dinningSide['toplength'] = this.dinningSide.endTop - this.dinningSide.startTop;
+    //this.dinningSide['length'] = this.dinningSide.end - this.dinningSide.start + 1;
     console.log(this.dinningSide);
 
     //Living Room Side, last by index
     this.livingSide = {
-      start: 217,
-      startTop: 277,
+      start: 218,
+      startTop: 278,
       endTop: 374,
       end: (this.totalLeds - 1)
     }
-    this.livingSide['toplength'] = this.livingSide.endTop - this.livingSide.startTop;
-    this.livingSide['length'] = this.livingSide.end - this.livingSide.start + 1;
+    //this.livingSide['toplength'] = this.livingSide.endTop - this.livingSide.startTop;
+    //this.livingSide['length'] = this.livingSide.end - this.livingSide.start + 1;
     console.log(this.livingSide);
 
     //settings for states

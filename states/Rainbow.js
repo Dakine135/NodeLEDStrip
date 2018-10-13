@@ -14,9 +14,13 @@ class Rainbow{
       // }
       // this.offset = (this.offset + (this.strip.stateSettings.speed * delta)) % 256;
 
-      Object.keys(this.strip.dinningSide).forEach((key) => (){
-        console.log(key);
-      }
+      //Object.keys(this.strip.livingSide).forEach((key) => {
+      //  this.strip.pixelData[this.strip.livingSide[key]] = 0xFFFFFF;
+      //});
+
+      //Object.keys(this.strip.dinningSide).forEach((key) => {
+      //  this.strip.pixelData[this.strip.dinningSide[key]] = 0xFFFFFF;
+      //});
 
 
   }//update
