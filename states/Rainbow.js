@@ -7,13 +7,18 @@ class Rainbow{
 
   update(delta){
     // ---- animation-loop color wheel slow roll
-      for (var i = 0; i < this.strip.dinningSide.length; i++) {
-        let offsetFloor = Math.floor(this.offset);
-        let color = this.strip.colorwheel((offsetFloor + i) % 256);
-        this.strip.drawPixel('dinning', 'start', 'mirror', i, color);
+      // for (var i = 0; i < this.strip.dinningSide.length; i++) {
+      //   let offsetFloor = Math.floor(this.offset);
+      //   let color = this.strip.colorwheel((offsetFloor + i) % 256);
+      //   this.strip.drawPixel('dinning', 'start', 'mirror', i, color);
+      // }
+      // this.offset = (this.offset + (this.strip.stateSettings.speed * delta)) % 256;
+
+      for(key in Object.keys(this.strip.dinningSide)){
+        console.log(key);
       }
-      this.offset = (this.offset + (this.strip.stateSettings.speed * delta)) % 256;
-      //test
+
+
   }//update
 }
 

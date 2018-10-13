@@ -190,7 +190,10 @@ class Strip
     //get and check position
     let intialIndex = sideConfig[position];
     let index = intialIndex;
-    if(intialIndex == null || intialIndex == undefined) throw "Bad position given in drawPixel: "+position+" expecting start, startTop, endTop, end";
+    if(intialIndex == null || intialIndex == undefined){
+      throw "Bad position given in drawPixel: "+position+
+      " expecting start, startTop, endTop, end";
+    }
 
     //calculate pixel index
     if(offset > 0 && offset < 1) {

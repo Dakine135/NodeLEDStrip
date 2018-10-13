@@ -1,6 +1,6 @@
 class stateSettings{
   constructor(){
-      this.speed = 100; //in changes per second
+      this.speed = 50; //in changes per second
       this.colors = ["#9b31f7", "#910a5b", "#ad2b14", "#adc92c", "#ce46d4"];
   }//constructor
 
