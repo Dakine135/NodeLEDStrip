@@ -18,8 +18,8 @@ class Strip
       endTop: 157,
       end: 217
     }
-    //this.dinningSide['toplength'] = this.dinningSide.endTop - this.dinningSide.startTop;
-    //this.dinningSide['length'] = this.dinningSide.end - this.dinningSide.start + 1;
+    this.dinningSide['toplength'] = this.dinningSide.endTop - this.dinningSide.startTop;
+    this.dinningSide['length'] = this.dinningSide.end - this.dinningSide.start + 1;
     console.log(this.dinningSide);
 
     //Living Room Side, last by index
@@ -29,8 +29,8 @@ class Strip
       endTop: 374,
       end: (this.totalLeds - 1)
     }
-    //this.livingSide['toplength'] = this.livingSide.endTop - this.livingSide.startTop;
-    //this.livingSide['length'] = this.livingSide.end - this.livingSide.start + 1;
+    this.livingSide['toplength'] = this.livingSide.endTop - this.livingSide.startTop;
+    this.livingSide['length'] = this.livingSide.end - this.livingSide.start + 1;
     console.log(this.livingSide);
 
     //settings for states
@@ -181,6 +181,7 @@ class Strip
     single, mirror, reflect
   ***********************/
   drawPixel(side, position, mode, offset, color){
+    //console.log("drawPixel", offset, color);
     //get and check side
     let sideConfig;
     if(side === 'dinning') sideConfig = this.dinningSide;
@@ -235,17 +236,17 @@ class Strip
     } else if(mode === 'mirror'){
       if(index > this.dinningSide.start && index < this.dinningSide.startTop){
         //index is on the right start side of dinning
-        // let fractionUp = this.mapRange(
-        //   index, this.dinningSide.start,
-        //   this.dinningSide.startTop - 1,
-        //   0, 1);
-        // let fractionOnLivingSideDown = 1 - fractionUp;
-        // translationIndex = Math.round(this.mapRange(
-        //   fractionOnLivingSideDown,
-        //   0,1,
-        //   this.livingSide.endTop + 1,
-        //   this.livingSide.end
-        // ));
+         let fractionUp = this.mapRange(
+           index, this.dinningSide.start,
+           this.dinningSide.startTop - 1,
+           0, 1);
+         let fractionOnLivingSideDown = 1 - fractionUp;
+         translationIndex = Math.round(this.mapRange(
+           fractionOnLivingSideDown,
+           0,1,
+           this.livingSide.endTop + 1,
+           this.livingSide.end
+         ));
 
       } else if(index >= this.dinningSide.startTop && index <= this.dinningSide.endTop){
         //index is on the top side of dinning
