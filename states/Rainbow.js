@@ -14,7 +14,7 @@ class Rainbow{
       // }
       // this.offset = (this.offset + (this.strip.stateSettings.speed * delta)) % 256;
 
-      for(key in Object.keys(this.strip.dinningSide)){
+      Object.keys(this.strip.dinningSide).forEach((key) => (){
         console.log(key);
       }
 
