@@ -235,7 +235,7 @@ class Strip
         this.livingSide.start,
         this.livingSide.end);
     } else if(mode === 'mirror'){
-      if(index > this.dinningSide.start && index < this.dinningSide.startTop){
+      if(index >= this.dinningSide.start && index < this.dinningSide.startTop){
         //index is on the right start side of dinning (beggining)
          let fraction = 1 - (index / ((this.dinningSide.startTop-1) - this.dinningSide.start));
          translationIndex = Math.round(this.mapRange(
