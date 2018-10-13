@@ -246,23 +246,20 @@ class Strip
 
       } else if(index >= this.dinningSide.startTop && index <= this.dinningSide.endTop){
         //index is on the top side of dinning (middle)
-        console.log("TOP dinning: ", index, this.dinningSide.startTop,"<=>",this.dinningSide.endTop);
         let fraction = 1.0 - ((index - this.dinningSide.startTop) / (this.dinningSide.endTop - this.dinningSide.startTop));
-        console.log("fraction:",fraction);
         translationIndex = Math.round(this.mapRange(
           fraction, 0, 1,
           this.livingSide.startTop,
           this.livingSide.endTop
         ));
-        console.log("transIndex: ",translationIndex, this.livingSide.startTop,"<=>",this.livingSide.endTop);
       } else if(index > this.dinningSide.endTop && index <= this.dinningSide.end){
-        //index is on the left side of dinning (end)
-        // let fraction = 1.0 - (index / (this.dinningSide.end - (this.dinningSide.endTop+1)));
-        // translationIndex = Math.round(this.mapRange(
-        //   fraction, 0, 1,
-        //   this.livingSide.start,
-        //   this.livingSide.startTop-1
-        // ));
+        index is on the left side of dinning (end)
+        let fraction = 1.0 - ((index-(this.dinningSide.endTop+1)) / (this.dinningSide.end - (this.dinningSide.endTop+1)));
+        translationIndex = Math.round(this.mapRange(
+          fraction, 0, 1,
+          this.livingSide.start,
+          this.livingSide.startTop-1
+        ));
       } else throw "Index out of bounds in translatePixelIndex: "+index;
     } else throw "Bad mode in translatePixelIndex: "+mode+" expecting mirror or reflect";
     return translationIndex;
