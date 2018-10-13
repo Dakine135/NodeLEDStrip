@@ -253,7 +253,7 @@ class Strip
           this.livingSide.endTop
         ));
       } else if(index > this.dinningSide.endTop && index <= this.dinningSide.end){
-        index is on the left side of dinning (end)
+        //index is on the left side of dinning (end)
         let fraction = 1.0 - ((index-(this.dinningSide.endTop+1)) / (this.dinningSide.end - (this.dinningSide.endTop+1)));
         translationIndex = Math.round(this.mapRange(
           fraction, 0, 1,
