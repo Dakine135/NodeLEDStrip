@@ -160,6 +160,7 @@ class Strip
   }
 
   setColor(num, color){
+    num = Math.round(num);
     // console.log("setColor", num, color);
     if (typeof color == "string") color = parseInt(color.slice(1), 16);
     // console.log(color);
@@ -235,22 +236,31 @@ class Strip
         this.livingSide.end);
     } else if(mode === 'mirror'){
       if(index > this.dinningSide.start && index < this.dinningSide.startTop){
-        //index is on the right start side of dinning
-         let fractionUp = this.mapRange(
-           index, this.dinningSide.start,
-           this.dinningSide.startTop - 1,
-           0, 1);
-         let fractionOnLivingSideDown = 1 - fractionUp;
+        //index is on the right start side of dinning (beggining)
+         let fraction = 1 - (index / ((this.dinningSide.startTop-1) - this.dinningSide.start));
          translationIndex = Math.round(this.mapRange(
-           fractionOnLivingSideDown,
-           0,1,
+           fraction, 0, 1,
            this.livingSide.endTop + 1,
            this.livingSide.end
          ));
 
       } else if(index >= this.dinningSide.startTop && index <= this.dinningSide.endTop){
-        //index is on the top side of dinning
-      }
+        //index is on the top side of dinning (middle)
+        let fraction = 1 - (index / (this.dinningSide.endTop - this.dinningSide.startTop));
+        translationIndex = Math.round(this.mapRange(
+          fraction, 0, 1,
+          this.livingSide.startTop,
+          this.livingSide.endTop
+        ));
+      } else if(index > this.dinningSide.endTop && index <= this.dinningSide.end){
+        //index is on the left side of dinning (end)
+        let fraction = 1 - (index / (this.dinningSide.end - (this.dinningSide.endTop+1)));
+        translationIndex = Math.round(this.mapRange(
+          fraction, 0, 1,
+          this.livingSide.start,
+          this.livingSide.startTop-1
+        ));
+      } else throw "Index out of bounds in translatePixelIndex: "+index;
     } else throw "Bad mode in translatePixelIndex: "+mode+" expecting mirror or reflect";
     return translationIndex;
   } // end translatePixelIndex

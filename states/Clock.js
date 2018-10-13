@@ -116,7 +116,7 @@ class Clock{
     if(this.secondsDropOn && this.secondsDroping){
       // console.log(this.secPos);
       let leftSecPos = Math.round(this.strip.mapRange(this.secPos, 0, 100, 0, this.leftRangeSeconds));
-      let leftIndex = this.strip.totalLeds - leftSecPos;
+      let leftIndex = this.strip.dinningSide.length - leftSecPos;
       let rightSecPos = Math.round(this.strip.mapRange(this.secPos, 0, 100, 0, this.rightRangeSeconds));
       // console.log(leftIndex, rightSecPos);
       // this.strip.pixelData[leftIndex - 1] = this.blinkingColor;
@@ -133,7 +133,7 @@ class Clock{
     }else{
       if(this.second <= 0.5){
         let leftOffset = Math.round(this.strip.mapRange(this.seconds, 0, 59, 0, this.leftRangeSeconds));
-        let leftIndex = this.strip.totalLeds - leftOffset;
+        let leftIndex = this.strip.dinningSide.length - leftOffset;
         let rightOffset = Math.round(this.strip.mapRange(this.seconds, 0, 59, 0, this.rightRangeSeconds));
         // this.strip.pixelData[leftIndex] = this.blinkingColor;
         // this.strip.pixelData[rightOffset] = this.blinkingColor;
