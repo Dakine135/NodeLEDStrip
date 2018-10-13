@@ -247,7 +247,7 @@ class Strip
       } else if(index >= this.dinningSide.startTop && index <= this.dinningSide.endTop){
         //index is on the top side of dinning (middle)
         console.log("TOP dinning: ", index, this.dinningSide.startTop,"<=>",this.dinningSide.endTop);
-        let fraction = 1.0 - (index / (this.dinningSide.endTop - this.dinningSide.startTop));
+        let fraction = 1.0 - ((index - this.dinningSide.startTop) / (this.dinningSide.endTop - this.dinningSide.startTop));
         console.log("fraction:",fraction);
         translationIndex = Math.round(this.mapRange(
           fraction, 0, 1,
