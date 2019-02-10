@@ -67,7 +67,13 @@ Used for cutting trim to length.
 * [Framework7](https://framework7.io/) - CSS framework, Designed for mobile webapp
 
 ## Application Features
-
+  Modes:
+  * Clock, show current time, animated
+  * Draw on live canvas for segments or each pixel
+  * Fade multiple colors in a set, color picker
+  * Pulse across the length of the arch and fill in. (Cats love it)
+  * Rainbow, classic RGB rotating rainbow animation
+  * Tilt, Use phone accelerometer and gyroscope to move a paddle, supports multiple simultaneous clients.
 ## Authors
 
 * **Dustin Welborn** - [GitHub](https://github.com/Dakine135) - [Youtube](https://www.youtube.com/channel/UCDjcmcvaXppX6DxXJUbJFSQ) - [LinkedIn](https://www.linkedin.com/in/dustin-n-welborn-401849103/)
